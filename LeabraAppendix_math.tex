@@ -1,0 +1,219 @@
+\section{Appendix: Implementational Details}
+
+The model was implemented using the Leabra framework, which is described in detail in \incite{OReillyMunakataFrankEtAl12}, \incite{OReillyMunakata00}, \incite{OReilly01}, and summarized here.  See Table~\ref{tab.sim_params} for a listing of parameter values, nearly all of which are at their default settings.  These same parameters and equations have been used to simulate over 40 different models in \incite{OReillyMunakataFrankEtAl12} and \incite{OReillyMunakata00}, and a number of other research models.  Thus, the model can be viewed as an instantiation of a systematic modeling framework using standardized mechanisms, instead of constructing new mechanisms for each model.  The model can be obtained by emailing the first author at randy.oreilly@colorado.edu.
+
+This version of Leabra contains three primary differences from the original \cite{OReillyMunakata00}: the activation function is slightly different, in a way that allows units to more accurately reflect their graded excitatory input drive, the inhibition function is much simpler and more biologically realistic, and the learning rule takes a more continuous form involving contrasts between values integrated over different time frames (i.e., with different time constants), which also produces a combination of error-driven and self-organizing learning within the same simple mathematical framework.  These modifications are described in detail in an updated version of the \incite{OReillyMunakata00} textbook, in \incite{OReillyMunakataFrankEtAl12}.  This new learning algorithm goes by the acronym of XCAL (temporally eXtended Contrastive Attractor Learning), and it replaces the combination of Contrastive Hebbian Learning (CHL) and standard Hebbian learning used in the original Leabra framework.
+
+\subsection{Pseudocode}
+
+The pseudocode for Leabra is given here, showing exactly how the pieces of the algorithm described in more detail in the subsequent sections fit together. The individual steps are repeated for each event (trial), which can be broken down into a {\em minus} and {\em plus} phase, followed by a synaptic weight updating function. Generally speaking, the minus phase represents the system's expectation for a given input and the plus phase represents the observation of the outcome. The difference between these two phases is then used to compute the updating function that drives learning. Furthermore, each phase contains a period of {\em settling} (measured in {\em cycles}) during which the activation values of each unit are updated taking into account the previous state of the network. Some units are {\em clamped}, or have fixed activation values and are not subject to this updating rule (e.g., V1 input in the minus phase, V1 input and Output in the plus phase).
+
+
+Outer loop: For each event (trial) in an epoch:
+\begin{enumerate}
+\item Iterate over minus and plus phases of settling for each event.
+ \begin{enumerate}
+ \item At start of settling, for all units:
+  \begin{enumerate}
+  \item Initialize all state variables (activation, $V_m$, etc).
+  \item Clamp external patterns (V1 input in minus phase, V1 input \& Output in plus phase).
+  \end{enumerate}
+ \item During each cycle of settling, for all non-clamped units:
+  \begin{enumerate}
+  \item Compute excitatory netinput ($g_e(t)$ or $\eta_j$,
+   eq~\ref{eq.net_in_avg}).
+  \item Compute FFFB inhibition for each layer, based on average net input and activation levels within the layer (eq~\ref{eq.fffb})
+  \item Compute point-neuron activation combining excitatory input and inhibition (eq~\ref{eq.vm}).
+  \item Update time-averaged activation values (short, medium, long) for use in learning.
+  \end{enumerate}
+ \end{enumerate}
+ \item After both phases update the weights, for all connections:
+ \begin{enumerate}
+ \item Compute XCAL learning as function of short, medium, and long time averages.
+ \item Increment the weights according to net weight change.
+ \end{enumerate}
+\end{enumerate}
+
+\subsection{Point Neuron Activation Function} 
+
+\begin{table}
+ \centering
+ \begin{tabular}{ll|ll} \hline
+Parameter & Value & Parameter & Value \\ \hline
+$E_l$ & 0.30 & $\overline{g_l}$ & 0.10 \\
+$E_i$ & 0.25 & $\overline{g_i}$ & 1.00 \\
+$E_e$ & 1.00 & $\overline{g_e}$ & 1.00 \\
+$V_{rest}$ & 0.30 & $\Theta$  & 0.50 \\
+$\tau$ & .3 & $\gamma$ & 80 \\ \hline
+ \end{tabular}
+ \caption{\small Parameters for the simulation (see equations in text
+  for explanations of parameters). All are standard default parameter values.}
+ \label{tab.sim_params}
+\end{table}
+
+Leabra uses a {\em point neuron} activation function that models the electrophysiological properties of real neurons, while simplifying their geometry to a single point. This function is nearly as simple computationally as the standard sigmoidal activation function, but the more biologically-based implementation makes it considerably easier to model inhibitory competition, as described below. Further, using this function enables cognitive models to be more easily related to more physiologically detailed simulations, thereby facilitating bridge-building between biology and cognition. We use normalized units where the unit of time is 1 msec, the unit of electrical potential is 0.1 V (with an offset of -0.1 for membrane potentials and related terms, such that their normal range stays within the $[0, 1]$ normalized bounds), and the unit of current is $1.0x10^{-8}$.
+
+The membrane potential $V_m$ is updated as a function of ionic conductances $g$ with reversal (driving) potentials $E$ as follows:
+\begin{equation}
+ \Delta V_m(t) = \tau \sum_c g_c(t) \overline{g_c} (E_c - V_m(t))
+ \label{eq.vm}
+\end{equation}
+with 3 channels ($c$) corresponding to: $e$ excitatory input; $l$ leak current; and $i$ inhibitory input. Following electrophysiological convention, the overall conductance is decomposed into a time-varying component $g_c(t)$ computed as a function of the dynamic state of the network, and a constant $\overline{g_c}$ that controls the relative influence of the different conductances. The equilibrium potential can be written in a simplified form by setting the excitatory driving potential ($E_e$) to 1 and the leak and inhibitory driving potentials ($E_l$ and $E_i$) of 0:
+\begin{equation}
+ V_m^\infty = \frac{g_e \overline{g_e}} {g_e
+  \overline{g_e} + g_l \overline{g_l} + g_i \overline{g_i}} 
+\end{equation}
+which shows that the neuron is computing a balance between excitation and the opposing forces of leak and inhibition. This equilibrium form of the equation can be understood in terms of a Bayesian decision making framework \cite{OReillyMunakata00}.
+
+The excitatory net input/conductance $g_e(t)$ or $\eta_j$ is computed as the proportion of open excitatory channels as a function of sending activations times the weight values:
+\begin{equation}
+ \eta_j = g_e(t) = \langle x_i \wij \rangle = \oneo{n} \sum_i x_i \wij
+ \label{eq.net_in_avg}
+\end{equation}
+The inhibitory conductance is computed via the kWTA function described in the next section, and leak is a constant.
+
+In its discrete spiking mode, Leabra implements exactly the AdEx (adaptive exponential) model \cite{BretteGerstner05}, which has been found through various competitions to provide an excellent fit to the actual firing properties of cortical pyramidal neurons \cite{GerstnerNaud09}, while remaining simple and efficient to implement. However, we typically use a rate-code approximation to discrete firing, which produces smoother more deterministic activation dynamics, while capturing the overall firing rate behavior of the discrete spiking model.
+
+We recently discovered that our previous strategy of computing a rate-code graded activation value directly from the membrane potential is problematic, because the mapping between $V_m$ and mean firing rate is not a one-to-one function in the AdEx model. Instead, we have found that a very accurate approximation to the discrete spiking rate can be obtained by comparing the excitatory net input directly with the effective computed amount of net input required to get the neuron firing over threshold ($g_e^{\Theta}$), where the threshold is indicated by $\Theta$:
+\begin{equation}
+g_e^{\Theta} = \frac{g_i \overline{g}_i (E_i - V_m^{\Theta}) +
+ \overline{g}_l(E_l - V_m^{\Theta})} {\overline{g}_e (V_m^{\Theta} - E_e)}
+\end{equation}
+\begin{equation}
+ y_j(t) \propto g_e(t) - g_e^{\Theta}
+\end{equation}
+where $y_j(t)$ is the firing rate output of the unit.
+
+We continue to use the Noisy X-over-X-plus-1 (NXX1) function, which starts out with a nearly linear function, followed by a saturating nonlinearity:
+\begin{equation}
+ y_j(t) = \oneo{\left(1 + \oneo{\gamma [g_e(t) - g_e^{\Theta}]_+} \right)}
+\end{equation}
+where $\gamma$ is a gain parameter, and $[x]_+$ is a threshold function that returns 0 if $x<0$ and $x$ if $x>0$. Note that if it returns 0, we assume $y_j(t) = 0$, to avoid dividing by 0. As it is, this function has a very sharp threshold, which interferes with graded learning learning mechanisms (e.g., gradient descent). To produce a less discontinuous deterministic function with a softer threshold, the function is convolved with a Gaussian noise kernel ($\mu=0$, $\sigma=.005$), which reflects the intrinsic processing noise of biological neurons:
+\begin{equation}
+ y^*_j(x) = \int_{-\infty}^{\infty} \oneo{\sqrt{2 \pi} \sigma}
+ e^{-z^2/(2 \sigma^2)} y_j(z-x) dz
+ \label{eq.conv}
+\end{equation}
+where $x$ represents the $[g_e(t) - g_e^{\Theta}]_+$ value, and $y^*_j(x)$ is the noise-convolved activation for that value. In the simulation, this function is implemented using a numerical lookup table.
+
+There is just one last problem with the equations as written above: They don't evolve over time in a graded fashion.  In contrast, the Vm value does evolve in a graded fashion by virtue of being iteratively computed, where it incrementally approaches the equilibrium value over a number of time steps of updating.  Instead the activation produced by the above equations goes directly to its equilibrium value very quickly, because it is calculated based on excitatory conductance and does not take into account the sluggishness with which changes in conductance lead to changes in membrane potentials (due to capacitance).
+
+To introduce graded iterative dynamics into the activation function, we just use the activation value ($y^*(x)$) from the above equation as a ''driving force'' to an iterative temporally-extended update equation:
+\begin{equation}
+  y_j(t) = y_j(t-1) + dt_{vm} \left(y_j^*(t) - y_j(t-1) \right)
+ \label{eq.y_iter}
+\end{equation}
+This causes the actual final rate code activation output at the current time $t$, $y(t)$ to iteratively approach the driving value given by $y^*(x)$, with the same time constant $dt_{vm}$ that is used in updating the membrane potential.  In practice this works extremely well, better than any prior activation function used with Leabra.
+
+
+\subsection{FFFB Inhibition}
+
+Leabra computes a layer-level inhibition conductance value based on a combination of feed-forward (FF) and feed-back (FB) dynamics.  This is an advance over the more explicit kWTA (k-Winners-Take-All) function that was used previously, though it achieves roughly the same overall kWTA behavior, with a much simpler, more efficient, and biologically plausible formulation.  The FF component is based directly on the average excitatory net input coming into the layer ($<\eta>$), and the FB component is based on the average activation of units within the layer ($<act>$).  Remarkably, fixed gain factors on each of these terms, together with simple time integration of the FB term to prevent oscillations, produces results that are overall comparable to the kWTA dynamics, except that the activations of units in the layer retain more of a proportional response to their overall level of excitatory drive, which is desirable in many cases.
+
+FFFB is conceptually just the sum of the FF and FB components, each with their own ff and fb gain factors, with an overall gain factor (gi) applied to both:
+\begin{equation}
+  g_i = \mbox{gi} \left( \mbox{ff} [<\eta> - \mbox{ff0}]_+ + \mbox{fb} <act> \right)
+  \label{eq.fffb}
+\end{equation}
+where $[ x ]_+$ indicates the positive part of whatever it contains -- anything negative truncates to zero.  It is important to have a small offset on the FF component, parameterized by ff0 which is typically .1 --- this delays the onset of inhibition and allows the neurons to get a little bit active first.  To minimize oscillations, the feedback component needs to be time integrated, with a fast time constant of .7 -- just a simple exponential approach to the driving fb inhibition value was used:
+\begin{equation}
+  fb_i(t) = fb_i(t-1) + dt \left(\ \mbox{fb} <act> - fb_i(t-1) \right)
+  \label{eq.fbi}
+\end{equation}
+Typically ff is set to 1.0, fb is 0.5, and the overall gain (gi) is manipulated to achieve desired activity levels -- typically it is around 2.2 or so.
+
+\subsection{XCAL Learning} 
+
+The full treatment of the new XCAL version of learning in Leabra is presented in \incite{OReillyMunakataFrankEtAl12}, but the basic equations and a brief motivation for them are presented here.
+
+In the original Leabra algorithm, learning was the sum of two terms: an error-driven component and a Hebbian self-organizing component. In the new XCAL formulation, the error-driven and self-organizing factors emerge out of a single learning rule, which was derived from a biologically detailed model of synaptic plasticity by Urakubo et al.~\cite{UrakuboHondaFroemkeEtAl08}, and is closely related to the Bienenstock, Cooper \& Munro (BCM) algorithm \cite{BienenstockCooperMunro82}. In BCM, a Hebbian-like sender-receiver activation product term is modulated by the extent to which the receiving unit is above or below a long-term running average activation value:
+\begin{equation}
+ \Delta_{bcm} \wij = xy (y - \langle y^2 \rangle)
+ \label{eq:bcm}
+\end{equation}
+($x$ = sender activation, $y$ = receiver activation, and $\langle y^2 \rangle$ = long-term average of squared receiver activation). The long-term average value acts like a dynamic plasticity threshold, and causes less-active units to increase their weights, while more-active units tend to decrease theirs (i.e., a classic homeostatic function). This form of learning resembles Hebbian learning in several respects, but can learn higher-order statistics, whereas Hebbian learning is more constrained to extract low-order correlational statistics. Furthermore, the BCM model may provide a better account of various experimental data, such as monocular deprivation experiments \cite{CooperIntratorBlaisEtAl04}.
+
+\begin{figure}[ht!]
+ \centering\includegraphics[height=2in]{fig_xcal_dwt_fun}
+ \caption{\small XCAL dWt function, shown with $\theta_p=0.5$, which determines
+   the cross-over point between negative and positive weight changes, and
+   $\theta_p \theta_d$ determines the inflection point at the left where the
+   curve goes from a negative slope to a positive slope. This function fits
+   the results of the highly detailed Urakubo et al \protect
+   \cite{UrakuboHondaFroemkeEtAl08} model, with a correlation value of
+   $r=0.89$.}
+ \label{fig.xcal_dwt}
+\end{figure}
+
+The Leabra XCAL learning rule is based on a contrast between a sender-receiver activation product term (shown initially as just $xy$ -- relevant time scales of averaging for this term are elaborated below) and a dynamic plasticity threshold $\theta_p$ (also elaborated below), which are integrated in the XCAL learning function (Figure~\ref{fig.xcal_dwt}):
+\begin{equation}
+ \Delta_{xcal} \wij = f_{xcal} ( xy, \theta_p)
+ \label{eq.xcal_simp}
+\end{equation}
+where the XCAL learning function was derived by fitting a piecewise-linear function to the Urakubo et al \cite{UrakuboHondaFroemkeEtAl08} simulation results based on synaptic drive levels (sender and receiver firing rates; the resulting fit was very good, with a correlation of $r=0.89$):
+\begin{equation}
+f_{xcal}(xy, \theta_p) = \left\{ \begin{array}{ll}
+(xy - \theta_p) & \mbox{if} \; xy > \theta_p \theta_d \\
+-xy (1 - \theta_d) / \theta_d & \mbox{otherwise} \end{array} \right.
+\end{equation}
+($\theta_d = .1$ is a constant that determines the point where the function reverses back toward zero within the weight decrease regime -- this reversalpoint occurs at $\theta_p \theta_d$, so that it adapts according to the dynamic $\theta_p$ value).
+
+The BCM equation produces a curved quadratic function that has the same qualitative shape as the XCAL function (Figure~\ref{fig.xcal_dwt}). A critical feature of these functions is that they go to 0 as the synaptic activity goes to 0, which is in accord with available data, and that they exhibit a crossover point from LTD to LTP as a function of synaptic drive (which is represented biologically by intracellular Calcium levels). A nice advantage of the linear XCAL function is that, to first approximation, it is just computing the subtraction $xy - \theta_p$.
+
+To achieve full error-driven learning within this XCAL framework, we just need to ensure that the core subtraction represents an error-driven learning term.  In the original Leabra, error-driven learning via the Contrastive Hebbian Learning algorithm (CHL) was computed as:
+\begin{equation}
+ \Delta_{chl} = x^+ y^+ - x^- y^-
+ \label{eq:chl}
+\end{equation}
+where the superscripts represent the plus ($+$) and minus ($-$) phases. This equation was shown to compute the same error gradient as the backpropagation algorithm, subject to symmetry and a 2nd-order numerical integration technique known as the midpoint method, based the generalized recirculation algorithm (GeneRec; \cite{OReilly96}). In XCAL, we replace these values with time-averaged activations computed over different time scales:
+\begin{itemize}
+\item {\bf s} = short time scale, reflecting the most recent state of neural  activity (e.g., past 100-200 msec). This is considered the ``plus phase'' -- it represents the {\em outcome} information on the current trial, and in  general should be more correct than the medium time scale.
+\item {\bf m} = medium time scale, which integrates over an entire  psychological ``trial'' of roughly a second or so -- this value contains a mixture of the ``minus phase'' and the ``plus phase'', but in contrasting it  with the short value, it plays the role of the minus phase value, or expectation about what the system thought should have happened on the  current trial.
+\item {\bf l} = long time scale, which integrates over hours to days of processing -- this is the BCM-like threshold term.
+\end{itemize}
+
+Thus, the error-driven aspect of XCAL learning is driven essentially by the following term: 
+\begin{equation}
+ \Delta_{xcal-err} \wij = f_{xcal} ( x_s y_s, x_m y_m )
+ \label{eq.xcal-err}
+\end{equation}
+However, consider the case where either of the short term values ($x_s$ or $y_s$) is 0, while both of the medium-term values are $>0$ -- from an error-driven learning perspective, this should result in a significant weight decrease, but because the XCAL function goes back to 0 when the input drive term is 0, the result is no weight change at all. To remedy this situation, we assume that the short-term value actually retains a small trace of the medium-term value:
+\begin{equation}
+ \Delta_{xcal-err} \wij = f_{xcal} ( \kappa x_s y_s + (1-\kappa) x_m y_m, x_m y_m)
+ \label{eq.xcal-err2}
+\end{equation}
+(where $\kappa = .9$, such that only .1 of the medium-term averages are incorporated into the effective short-term average).
+
+The self-organizing aspect of XCAL is driven by comparing this same synaptic drive term to a longer-term average, as in the BCM algorithm:
+\begin{equation}
+ \Delta_{xcal-so} \wij = f_{xcal} ( \kappa x_s y_s + (1-\kappa) x_m y_m, \gamma_l y_l)
+ \label{eq.xcal-selforg}
+\end{equation}
+where $\gamma_l = 3$ is a constant that scales the long-term average threshold term (due to sparse activation levels, these long-term averages tend to be rather low, so the larger gain multiplier is necessary to make this term relevant whenever the units actually are active and adapting their weights).
+
+Combining both of these forms of learning in the full XCAL learning rule amounts to computing an aggregate $\theta_p$ threshold that reflects a combination of both the self-organizing long-term average, and the medium-term minus-phase like average:
+\begin{equation}
+ \Delta_{xcal} \wij = f_{xcal} ( \kappa x_s y_s + (1-\kappa) x_m y_m, \lambda
+ \gamma y_l + (1-\lambda) x_m y_m)
+ \label{eq.xcal}
+\end{equation}
+where $\lambda = .01$ is a weighting factor determining the mixture of self-organizing and error-driven learning influences (as was the case with standard Leabra, the balance of error-driven and self-organizing is heavily weighted toward error driven, because error-gradients are often quite weak in comparison with local statistical information that the self-organizing system encodes).
+
+The weight changes are subject to a soft-weight bounding to keep within the $0-1$ range:
+\begin{equation}
+ \Delta_{sb} \wij = [\Delta_{xcal}]_+ (1-\wij) + [\Delta_{xcal}]_- \wij
+ \label{eq.err_soft_bound}
+\end{equation}
+where the $[]_+$ and $[]_-$ operators extract positive values or negative-values (respectively), otherwise 0.
+
+Finally, as in the original Leabra model, the weights are subject to contrast enhancement, which magnifies the stronger weights and shrinks the smaller ones in a parametric, continuous fashion. This contrast enhancement is achieved by passing the linear weight values computed by the learning rule through a sigmoidal nonlinearity of the following form:
+\begin{equation}
+ \hat{w}_{ij} = \oneo{1 + \left(\frac{\wij}{\theta (1-\wij)}\right)^{-\gamma}}
+ \label{eq.wt_off}
+\end{equation}
+where $\hat{w}_{ij}$ is the contrast-enhanced weight value, and the sigmoidal function is parameterized by an offset $\theta$ and a gain $\gamma$ (standard defaults of 1 and 6, respectively, used here). 
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

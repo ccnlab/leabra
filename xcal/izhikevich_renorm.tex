@@ -1,0 +1,137 @@
+\documentclass[11pt,twoside]{article}
+%\documentclass[10pt,twoside,twocolumn]{article}
+\usepackage[english]{babel}
+\usepackage{times,subeqnarray}
+% following is for pdflatex vs. old(dvi) latex
+\newif\ifpdf
+\ifx\pdfoutput\undefined
+    \pdffalse           % we are not running PDFLaTeX
+    \usepackage[dvips]{graphicx}
+\else
+    \pdfoutput=1        % we are running PDFLaTeX
+    \pdftrue
+    \usepackage[pdftex]{graphicx}
+\fi
+\usepackage{apatitlepages}
+% if you want to be more fully apa-style for submission, then use this
+%\usepackage{setspace,psypub,ulem}
+%\usepackage{setspace} % must come before psypub
+%\usepackage{psypub}
+\usepackage{psydraft}
+%\usepackage{one-in-margins}  % use instead of psydraft for one-in-margs
+\usepackage{apa}       % apa must come last
+% using latex2e as standard, use the following for latex209
+% \documentstyle [times,11pt,twoside,subeqnarray,psydraft,apa,epsf]{article}
+\input netsym
+
+% tell pdflatex to prefer .pdf files over .png files!!
+\ifpdf
+  \DeclareGraphicsExtensions{.pdf,.eps,.png,.jpg,.mps,.tif}
+\fi
+
+% use 0 for psypub format 
+\parskip 2pt
+% for double-spacing, determines spacing 
+%\doublespacing
+%\setstretch{1.7}
+
+\columnsep .25in   % 3/8 in column separation
+
+\def\myheading{ Renorm of the Izhikevich Spiking Eq's }
+
+% no twoside for pure apa style, use \markright with heading only
+\pagestyle{myheadings}
+\markboth{\hspace{.5in} \myheading \hfill}{\hfill O'Reilly \hspace{.5in}}
+
+\begin{document}
+\bibliographystyle{apa}
+
+% sloppy is the way to go!
+\sloppy
+\raggedbottom
+
+\def\mytitle{ \myheading } % replace with full title
+
+\def\myauthor{Randall C. O'Reilly\\
+  Department of Psychology and Neuroscience\\
+  University of Colorado Boulder \\
+  345 UCB\\
+  Boulder, CO 80309\\
+  {\small randy.oreilly@colorado.edu}\\}
+
+\def\mynote{Draft Manuscript: Do not cite or quote without
+  permission.\\
+  Supported by ONR grant N00014-07-1-0651 and
+  NIH grants MH069597, % pfc-mega
+  MH079485. % defd
+}
+
+\def\myabstract{
+  Now that's abstract..
+}
+
+% \titlesepage{\mytitle}{\myauthor}{\mynote}{\myabstract}
+% \twocolumn
+
+%\titlesamepage{\mytitle}{\myauthor}{\mynote}{\myabstract}
+
+%\titlesamepageoc{\mytitle}{\myauthor}{\mynote}{\myabstract}
+
+% single-spaced table of contents, delete if unwanted
+% \newpage
+% \begingroup
+% \parskip 0em
+% \tableofcontents
+% \endgroup
+% \newpage
+
+% \twocolumn
+
+\pagestyle{myheadings}
+
+Original Eq:
+\begin{eqnarray}
+  v' & = & 0.04 v^2 + 5v + 140 - u + I \\
+  u' & = & a(bv - u)
+\end{eqnarray}
+New normalized units, in terms of min value m and range r:
+\begin{eqnarray}
+  g & = & \oneo{r} (v - m)\\
+  v & = & r g + m\\
+  h & = & \oneo{r} u \\
+  u & = & r h
+\end{eqnarray}
+And derivatives:
+\begin{eqnarray}
+  g' & = & \oneo{r} v'\\
+  v' & = & r g'\\
+  h' & = & \oneo{r} u'\\
+  u' & = & r h'\\
+\end{eqnarray}
+Make the substitution and start manipulating:
+\begin{eqnarray}
+  r g' & = & 0.04 (rg + m)^2 + 5 (rg + m) + 140 - rh + I \\
+  r g' & = & 0.04 (r^2g^2 + 2rgm + m^2) + 5rg + 5m + 140 - rh + I \\
+  g' & = & 0.04 rg^2 + 0.04 (2gm) + \oneo{r} 0.04 m^2 + 5g + \oneo{r} 5m + \oneo{r} 140 - h + I \\
+  g' & = & 0.04 rg^2 + (0.08 m + 5)g + \oneo{r} (m(0.04 m + 5) + 140) - h + I
+\end{eqnarray}
+Final result:
+\begin{eqnarray}
+  g' & = & \alpha g^2 + \beta g + \gamma - h + I \\
+  \alpha & = & 0.04 r \\
+  \beta & = & 0.08 m + 5\\
+  \gamma & = & \oneo{r} (m(0.04 m + 5) + 140)
+\end{eqnarray}
+And for the recovery variable:
+\begin{eqnarray}
+  r h' & = & a(b(rg + m) - rh)\\
+  r h' & = & abrg + abm - arh\\
+  h' & = & abg + \oneo{r}abm - ah\\
+  h' & = & ab(g + \oneo{r}m) - ah\\
+  h' & = & a(b(g + \oneo{r}m) - h)\\
+  h' & = & a(bg + \oneo{r}mb - h)
+\end{eqnarray}
+
+\bibliography{ccnlab}
+
+\end{document}

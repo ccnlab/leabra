@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 14.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 43363)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="612px" height="792px" viewBox="0 0 612 792" enable-background="new 0 0 612 792" xml:space="preserve">
+<desc>Matlab Figure Converted by PLOT2SVG written by Juerg Schwizer</desc>
+<g id="topgroup">
+	<rect fill="#FFFFFF" width="612" height="459"/>
+	<g id="ID000000">
+		<polygon fill="#FFFFFF" points="136.388,399.986 497.031,399.986 497.031,39.343 136.388,39.343 		"/>
+		<polygon fill="#FFFFFF" points="136.388,39.343 497.031,39.343 497.031,39.343 		"/>
+		<polygon fill="#FFFFFF" points="136.388,399.986 136.388,399.986 136.388,39.343 136.388,39.343 		"/>
+		<g>
+			<g>
+				<defs>
+					<rect id="SVGID_1_" x="136.388" y="39.343" width="360.642" height="360.643"/>
+				</defs>
+				<clipPath id="SVGID_2_">
+					<use xlink:href="#SVGID_1_"  overflow="visible"/>
+				</clipPath>
+				<g id="ID000002" clip-path="url(#SVGID_2_)">
+					<polyline fill="none" stroke="#3F3F3F" stroke-width="1.5" points="137.59,321.179 142.399,310.687 147.208,302.681 
+						152.016,289.11 156.825,278.185 161.634,263.813 166.442,253.339 171.251,246.561 176.059,250.939 180.868,264.857 
+						185.677,272.423 190.485,269.312 195.293,265.191 200.103,267.153 204.911,265.932 209.719,259.896 214.528,255.8 
+						219.336,255.073 224.145,264.874 228.954,264.983 233.762,266.524 238.57,277.21 243.379,294.98 248.188,301.532 
+						252.996,308.235 257.805,316.481 262.613,320.717 267.422,316.333 272.231,310.032 277.039,295.459 281.848,279.302 
+						286.657,280.626 291.465,273.258 296.273,251.769 301.082,220.781 305.891,177.728 310.699,126.164 315.508,88.274 
+						320.316,76.609 325.125,73.507 329.934,81.044 334.742,107.956 339.55,161.421 344.359,218.295 349.168,255.59 
+						353.976,271.791 358.785,285.657 363.594,294.792 368.401,305.425 373.211,312.816 378.019,301.343 382.827,297.989 
+						387.637,308.459 392.444,316.829 397.253,319.658 402.062,330.264 406.87,341.78 411.679,342.7 416.488,342.771 
+						421.296,334.968 426.104,326.054 430.913,328.774 435.722,326.186 440.53,326.417 445.339,330.12 450.147,336.95 
+						454.957,337.725 459.765,331.844 464.573,322.467 469.383,324.764 474.19,327.155 478.999,330.194 483.808,329.299 
+						488.616,329.864 493.425,335.939 					"/>
+				</g>
+			</g>
+			<g>
+				<defs>
+					<rect id="SVGID_3_" x="136.388" y="39.343" width="360.642" height="360.643"/>
+				</defs>
+				<clipPath id="SVGID_4_">
+					<use xlink:href="#SVGID_3_"  overflow="visible"/>
+				</clipPath>
+				<g id="ID000003" clip-path="url(#SVGID_4_)">
+					<polyline fill="none" stroke="#3F3F3F" stroke-width="1.5" stroke-dasharray="8,2" points="137.59,322.078 142.399,315.396 
+						147.208,311.008 152.016,307.155 156.825,306.898 161.634,308.035 166.442,305.919 171.251,291.705 176.059,280.894 
+						180.868,276.516 185.677,284.934 190.485,288.966 195.293,295.688 200.103,299.533 204.911,290.121 209.719,275.081 
+						214.528,269.395 219.336,273.473 224.145,273.416 228.954,273.144 233.762,282.843 238.57,297.92 243.379,309.065 
+						248.188,309.548 252.996,317.335 257.805,322.739 262.613,316.617 267.422,314.377 272.231,316.232 277.039,313.917 
+						281.848,308.123 286.657,308.25 291.465,290.648 296.273,262.162 301.082,226.532 305.891,185.191 310.699,140.473 
+						315.508,102.874 320.316,87.975 325.125,90.322 329.934,106.77 334.742,125.39 339.55,161.772 344.359,217.493 
+						349.168,249.538 353.976,254.988 358.785,266.994 363.594,287.908 368.401,292.485 373.211,292.957 378.019,307.766 
+						382.827,318.945 387.637,315.402 392.444,316.495 397.253,323.943 402.062,322.754 406.87,325.045 411.679,324.407 
+						416.488,325.569 421.296,327.2 426.104,331.036 430.913,331.426 435.722,334.246 440.53,335.621 445.339,330.167 
+						450.147,320.529 454.957,317.542 459.765,319.868 464.573,317.596 469.383,311.509 474.19,314.965 478.999,325.289 
+						483.808,325.521 488.616,325.983 493.425,329.085 					"/>
+				</g>
+			</g>
+			<g>
+				<defs>
+					<rect id="SVGID_5_" x="136.388" y="39.343" width="360.642" height="360.643"/>
+				</defs>
+				<clipPath id="SVGID_6_">
+					<use xlink:href="#SVGID_5_"  overflow="visible"/>
+				</clipPath>
+				<g id="ID000004" clip-path="url(#SVGID_6_)">
+					<polyline fill="none" stroke="#3FBFBF" stroke-width="1.5" points="137.59,281.127 142.399,270.223 147.208,261.398 
+						152.016,258.609 156.825,264.849 161.634,269.076 166.442,274.253 171.251,282.946 176.059,296.365 180.868,298.74 
+						185.677,298.519 190.485,305.579 195.293,302.489 200.103,294.454 204.911,289.933 209.719,281.952 214.528,263.85 
+						219.336,255.193 224.145,263.069 228.954,271.709 233.762,279.46 238.57,287.903 243.379,294.872 248.188,293.073 
+						252.996,295.635 257.805,300.482 262.613,311.75 267.422,319.224 272.231,320.151 277.039,314.009 281.848,309.256 
+						286.657,298.267 291.465,279.463 296.273,258.409 301.082,244.52 305.891,210.777 310.699,167.854 315.508,141.502 
+						320.316,131.823 325.125,126.193 329.934,130.344 334.742,137.064 339.55,159.967 344.359,204.754 349.168,235.921 
+						353.976,254.845 358.785,277.381 363.594,299.021 368.401,310.721 373.211,325.954 378.019,323.507 382.827,312.515 
+						387.637,306.77 392.444,316.381 397.253,321.458 402.062,326.227 406.87,324.85 411.679,316.263 416.488,307.711 
+						421.296,304.31 426.104,301.46 430.913,302.374 435.722,306.924 440.53,315.758 445.339,320.604 450.147,320.581 
+						454.957,333.146 459.765,341.71 464.573,344.781 469.383,346.675 474.19,343.021 478.999,330.248 483.808,329.758 
+						488.616,331.683 493.425,328.572 					"/>
+				</g>
+			</g>
+			<g>
+				<defs>
+					<rect id="SVGID_7_" x="136.388" y="39.343" width="360.642" height="360.643"/>
+				</defs>
+				<clipPath id="SVGID_8_">
+					<use xlink:href="#SVGID_7_"  overflow="visible"/>
+				</clipPath>
+				<g id="ID000005" clip-path="url(#SVGID_8_)">
+					<polyline fill="none" stroke="#3FBFBF" stroke-width="1.5" stroke-dasharray="8,2" points="137.59,299.497 142.399,290.301 
+						147.208,277.344 152.016,258.298 156.825,252.191 161.634,255.13 166.442,255.292 171.251,260.971 176.059,275.757 
+						180.868,275.742 185.677,273.136 190.485,281.962 195.293,290.077 200.103,283.248 204.911,274.735 209.719,269.191 
+						214.528,256.218 219.336,250.136 224.145,246.993 228.954,248.111 233.762,254.815 238.57,266.784 243.379,284.252 
+						248.188,293.184 252.996,299.583 257.805,304.815 262.613,311.616 267.422,316.897 272.231,325.773 277.039,330.414 
+						281.848,318.588 286.657,304.538 291.465,270.649 296.273,207.881 301.082,164.622 305.891,110.153 310.699,73.058 
+						315.508,51.777 320.316,48.28 325.125,65.669 329.934,90.536 334.742,115.394 339.55,160.346 344.359,225.192 349.168,261.122 
+						353.976,265.409 358.785,279.417 363.594,305.256 368.401,319.268 373.211,313.828 378.019,306.306 382.827,309.054 
+						387.637,321.54 392.444,331.944 397.253,325.827 402.062,328.754 406.87,334.2 411.679,335.843 416.488,346.813 
+						421.296,355.931 426.104,350.576 430.913,345.163 435.722,342.401 440.53,340.433 445.339,345.09 450.147,345.821 
+						454.957,330.605 459.765,326.846 464.573,323.082 469.383,329.642 474.19,338.674 478.999,350.542 483.808,355.53 
+						488.616,341.371 493.425,338.583 					"/>
+				</g>
+			</g>
+			<g>
+				<defs>
+					<rect id="SVGID_9_" x="136.388" y="39.343" width="360.642" height="360.643"/>
+				</defs>
+				<clipPath id="SVGID_10_">
+					<use xlink:href="#SVGID_9_"  overflow="visible"/>
+				</clipPath>
+				<g id="ID000006" clip-path="url(#SVGID_10_)">
+					<polygon fill-opacity="0.1" stroke="#000000" stroke-width="0.5" stroke-opacity="0.1" points="305.891,39.343 315.508,39.343 
+						315.508,399.986 305.891,399.986 					"/>
+				</g>
+			</g>
+			<g>
+				<defs>
+					<rect id="SVGID_11_" x="136.388" y="39.343" width="360.642" height="360.643"/>
+				</defs>
+				<clipPath id="SVGID_12_">
+					<use xlink:href="#SVGID_11_"  overflow="visible"/>
+				</clipPath>
+				<g id="ID000007" clip-path="url(#SVGID_12_)">
+					<line fill="none" stroke="#000000" stroke-width="0.5" x1="136.388" y1="399.986" x2="136.388" y2="39.343"/>
+				</g>
+			</g>
+			<g>
+				<defs>
+					<rect id="SVGID_13_" x="136.388" y="39.343" width="360.642" height="360.643"/>
+				</defs>
+				<clipPath id="SVGID_14_">
+					<use xlink:href="#SVGID_13_"  overflow="visible"/>
+				</clipPath>
+				<g id="ID000008" clip-path="url(#SVGID_14_)">
+					<line fill="none" stroke="#000000" stroke-width="0.5" x1="136.388" y1="580.307" x2="557.138" y2="580.307"/>
+				</g>
+			</g>
+			<g id="ID000009">
+				<g transform="translate(361.056,516.061)">
+					<g transform="rotate(-0.0)">
+						<text transform="matrix(1 0 0 1 -119.9149 -64.1645)" font-family="'Helvetica'" font-size="21.8916">Time (seconds)</text>
+					</g>
+				</g>
+			</g>
+			<g id="ID000010">
+				<g transform="translate(88.985,251.478)">
+					<g transform="rotate(-90.0)">
+						<text transform="matrix(1 0 0 1 13.6362 -11.0646)" font-family="'Helvetica'" font-size="21.8916">ITC</text>
+					</g>
+				</g>
+			</g>
+			<g id="ID000011">
+				<g transform="translate(361.056,24.337)">
+					<g transform="rotate(-0.0)">
+						<text transform="matrix(1 0 0 1 -164.7562 -3.0255)" font-family="'Helvetica'" font-size="21.8916">Space x Time interaction</text>
+					</g>
+				</g>
+			</g>
+			<g id="ID000012">
+			</g>
+			<g id="ID000013">
+			</g>
+		</g>
+		<g>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="256.603" y1="399.986" x2="256.603" y2="395.242"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="376.816" y1="399.986" x2="376.816" y2="395.242"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="136.388" y1="399.986" x2="497.031" y2="399.986"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="256.603" y1="39.343" x2="256.603" y2="44.086"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="376.816" y1="39.343" x2="376.816" y2="44.086"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="136.388" y1="39.343" x2="497.031" y2="39.343"/>
+			<g transform="translate(155.754,494.470)">
+				<g transform="rotate(-0.0)">
+					<text transform="matrix(1 0 0 1 -25.4532 -61.4798)" font-family="'Helvetica'" font-size="21.8916">0</text>
+				</g>
+			</g>
+			<g transform="translate(293.038,494.470)">
+				<g transform="rotate(-0.0)">
+					<text transform="matrix(1 0 0 1 -51.6513 -61.4798)" font-family="'Helvetica'" font-size="21.8916">0.2</text>
+				</g>
+			</g>
+			<g transform="translate(430.321,494.470)">
+				<g transform="rotate(-0.0)">
+					<text transform="matrix(1 0 0 1 -68.7204 -61.4798)" font-family="'Helvetica'" font-size="21.8916">0.4</text>
+				</g>
+			</g>
+			<g transform="translate(567.605,494.470)">
+				<g transform="rotate(-0.0)">
+					<text transform="matrix(1 0 0 1 -85.7896 -61.4798)" font-family="'Helvetica'" font-size="21.8916">0.6</text>
+				</g>
+			</g>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="136.388" y1="339.878" x2="139.995" y2="339.878"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="136.388" y1="279.771" x2="139.995" y2="279.771"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="136.388" y1="219.664" x2="139.995" y2="219.664"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="136.388" y1="159.558" x2="139.995" y2="159.558"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="136.388" y1="99.45" x2="139.995" y2="99.45"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="136.388" y1="399.986" x2="136.388" y2="39.343"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="497.031" y1="339.878" x2="493.425" y2="339.878"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="497.031" y1="279.771" x2="493.425" y2="279.771"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="497.031" y1="219.664" x2="493.425" y2="219.664"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="497.031" y1="159.558" x2="493.425" y2="159.558"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="497.031" y1="99.45" x2="493.425" y2="99.45"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="497.031" y1="399.986" x2="497.031" y2="39.343"/>
+			<g transform="translate(147.517,468.012)">
+				<g transform="rotate(-0.0)">
+					<text transform="matrix(1 0 0 1 -60.9491 -58.1907)" font-family="'Helvetica'" font-size="21.8916">0.06</text>
+				</g>
+			</g>
+			<g transform="translate(147.517,399.370)">
+				<g transform="rotate(-0.0)">
+					<text transform="matrix(1 0 0 1 -60.9491 -49.6561)" font-family="'Helvetica'" font-size="21.8916">0.08</text>
+				</g>
+			</g>
+			<g transform="translate(147.517,330.728)">
+				<g transform="rotate(-0.0)">
+					<text transform="matrix(1 0 0 1 -48.7738 -41.1216)" font-family="'Helvetica'" font-size="21.8916">0.1</text>
+				</g>
+			</g>
+			<g transform="translate(147.517,262.087)">
+				<g transform="rotate(-0.0)">
+					<text transform="matrix(1 0 0 1 -60.9491 -32.587)" font-family="'Helvetica'" font-size="21.8916">0.12</text>
+				</g>
+			</g>
+			<g transform="translate(147.517,193.445)">
+				<g transform="rotate(-0.0)">
+					<text transform="matrix(1 0 0 1 -60.9491 -24.0519)" font-family="'Helvetica'" font-size="21.8916">0.14</text>
+				</g>
+			</g>
+			<g transform="translate(147.517,124.803)">
+				<g transform="rotate(-0.0)">
+					<text transform="matrix(1 0 0 1 -60.9491 -15.5178)" font-family="'Helvetica'" font-size="21.8916">0.16</text>
+				</g>
+			</g>
+			<g transform="translate(147.517,56.161)">
+				<g transform="rotate(-0.0)">
+					<text transform="matrix(1 0 0 1 -60.9491 -6.9833)" font-family="'Helvetica'" font-size="21.8916">0.18</text>
+				</g>
+			</g>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="136.388" y1="399.986" x2="136.388" y2="396.379"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="136.388" y1="399.986" x2="136.388" y2="399.986"/>
+		</g>
+	</g>
+	<g id="ID000014">
+		<polygon fill="#FFFFFF" points="389.522,165.039 492.323,165.039 492.323,45.362 389.522,45.362 		"/>
+		<polygon fill="#FFFFFF" points="389.522,45.362 492.323,45.362 492.323,45.362 		"/>
+		<polygon fill="#FFFFFF" points="389.522,165.039 389.522,165.039 389.522,45.362 389.522,45.362 		"/>
+		<g>
+			<g id="ID000016">
+				<g transform="translate(494.163,82.470)">
+					<g transform="rotate(-0.0)">
+						<text transform="matrix(1 0 0 1 -61.4423 -10.2542)" font-family="'Helvetica'" font-size="21.8916">S-T-</text>
+					</g>
+				</g>
+			</g>
+			<g>
+				<defs>
+					<rect id="SVGID_15_" x="389.522" y="45.362" width="102.802" height="119.677"/>
+				</defs>
+				<clipPath id="SVGID_16_">
+					<use xlink:href="#SVGID_15_"  overflow="visible"/>
+				</clipPath>
+				<g id="ID000017" clip-path="url(#SVGID_16_)">
+					<line fill="none" stroke="#3F3F3F" stroke-width="1.5" x1="396.09" y1="61.759" x2="428.928" y2="61.759"/>
+				</g>
+			</g>
+			<g>
+				<defs>
+					<rect id="SVGID_17_" x="389.522" y="45.362" width="102.802" height="119.677"/>
+				</defs>
+				<clipPath id="SVGID_18_">
+					<use xlink:href="#SVGID_17_"  overflow="visible"/>
+				</clipPath>
+				<g id="ID000018" clip-path="url(#SVGID_18_)">
+				</g>
+			</g>
+			<g id="ID000019">
+				<g transform="translate(494.163,116.324)">
+					<g transform="rotate(-0.0)">
+						<text transform="matrix(1 0 0 1 -61.4423 -14.4636)" font-family="'Helvetica'" font-size="21.8916">S+T-</text>
+					</g>
+				</g>
+			</g>
+			<g>
+				<defs>
+					<rect id="SVGID_19_" x="389.522" y="45.362" width="102.802" height="119.677"/>
+				</defs>
+				<clipPath id="SVGID_20_">
+					<use xlink:href="#SVGID_19_"  overflow="visible"/>
+				</clipPath>
+				<g id="ID000020" clip-path="url(#SVGID_20_)">
+					
+						<line fill="none" stroke="#3F3F3F" stroke-width="1.5" stroke-dasharray="8,2" x1="396.09" y1="90.72" x2="428.928" y2="90.72"/>
+				</g>
+			</g>
+			<g>
+				<defs>
+					<rect id="SVGID_21_" x="389.522" y="45.362" width="102.802" height="119.677"/>
+				</defs>
+				<clipPath id="SVGID_22_">
+					<use xlink:href="#SVGID_21_"  overflow="visible"/>
+				</clipPath>
+				<g id="ID000021" clip-path="url(#SVGID_22_)">
+				</g>
+			</g>
+			<g id="ID000022">
+				<g transform="translate(494.163,148.925)">
+					<g transform="rotate(-0.0)">
+						<text transform="matrix(1 0 0 1 -61.4423 -18.5168)" font-family="'Helvetica'" font-size="21.8916">S-T+</text>
+					</g>
+				</g>
+			</g>
+			<g>
+				<defs>
+					<rect id="SVGID_23_" x="389.522" y="45.362" width="102.802" height="119.677"/>
+				</defs>
+				<clipPath id="SVGID_24_">
+					<use xlink:href="#SVGID_23_"  overflow="visible"/>
+				</clipPath>
+				<g id="ID000023" clip-path="url(#SVGID_24_)">
+					<line fill="none" stroke="#3FBFBF" stroke-width="1.5" x1="396.09" y1="119.682" x2="428.928" y2="119.682"/>
+				</g>
+			</g>
+			<g>
+				<defs>
+					<rect id="SVGID_25_" x="389.522" y="45.362" width="102.802" height="119.677"/>
+				</defs>
+				<clipPath id="SVGID_26_">
+					<use xlink:href="#SVGID_25_"  overflow="visible"/>
+				</clipPath>
+				<g id="ID000024" clip-path="url(#SVGID_26_)">
+				</g>
+			</g>
+			<g id="ID000025">
+				<g transform="translate(494.163,182.779)">
+					<g transform="rotate(-0.0)">
+						<text transform="matrix(1 0 0 1 -61.4423 -22.7258)" font-family="'Helvetica'" font-size="21.8916">S+T+</text>
+					</g>
+				</g>
+			</g>
+			<g>
+				<defs>
+					<rect id="SVGID_27_" x="389.522" y="45.362" width="102.802" height="119.677"/>
+				</defs>
+				<clipPath id="SVGID_28_">
+					<use xlink:href="#SVGID_27_"  overflow="visible"/>
+				</clipPath>
+				<g id="ID000026" clip-path="url(#SVGID_28_)">
+					
+						<line fill="none" stroke="#3FBFBF" stroke-width="1.5" stroke-dasharray="8,2" x1="396.09" y1="148.643" x2="428.928" y2="148.643"/>
+				</g>
+			</g>
+			<g>
+				<defs>
+					<rect id="SVGID_29_" x="389.522" y="45.362" width="102.802" height="119.677"/>
+				</defs>
+				<clipPath id="SVGID_30_">
+					<use xlink:href="#SVGID_29_"  overflow="visible"/>
+				</clipPath>
+				<g id="ID000027" clip-path="url(#SVGID_30_)">
+				</g>
+			</g>
+			<g id="ID000028">
+			</g>
+			<g id="ID000029">
+			</g>
+			<g id="ID000030">
+			</g>
+		</g>
+		<g>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="389.522" y1="165.039" x2="492.323" y2="165.039"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="389.522" y1="45.362" x2="492.323" y2="45.362"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="389.522" y1="165.039" x2="389.522" y2="45.362"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="492.323" y1="165.039" x2="492.323" y2="45.362"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="389.522" y1="165.039" x2="389.522" y2="163.843"/>
+			<line fill="none" stroke="#000000" stroke-width="0.5" x1="389.522" y1="165.039" x2="389.522" y2="165.039"/>
+		</g>
+	</g>
+</g>
+</svg>

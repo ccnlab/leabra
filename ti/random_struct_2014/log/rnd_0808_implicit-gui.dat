@@ -1,0 +1,2 @@
+_H:	$train_env	|max_batch	|max_epoch	|tpe	|tpte	|pa_num	|pa_denom	%pa_trg	%pa_train	%pa_test	%h_gi	%ctxt_rel	%lrate	%lmix	%act_thr	|rep	|alt	%ra	%GT_corr	%GF_corr	|NONE	|ptn1H	|ptn1T	|ptn2HH	|ptn2HT	|ptn2TH	|ptn2TT	%popvHH	%popvHT
+_D:	"CT_TRAIN_ptn2"	10	10	100	1000	1	2	0.5	0.485859	0.521522	1.7	2	0.02	0.1	0.8	0	0	0	0.793816	0.347472	812	92	96	0	0	0	0	0.5	0.5

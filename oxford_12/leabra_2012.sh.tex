@@ -1,0 +1,1511 @@
+\documentclass[11pt,twoside]{article}
+%\documentclass[10pt,twoside,twocolumn]{article}
+\usepackage[english]{babel}
+\usepackage{times,subeqnarray}
+% following is for pdflatex vs. old(dvi) latex
+\usepackage[pdftex]{graphicx}
+\usepackage{url}
+\usepackage{apatitlepages}
+% if you want to be more fully apa-style for submission, then use this
+%\usepackage{setspace,psypub,ulem}
+%\usepackage{setspace} % must come before psypub
+%\usepackage{psypub}
+\usepackage{psydraft}
+%\usepackage{one-in-margins}  % use instead of psydraft for one-in-margs
+\usepackage{apa}       % apa must come last
+% using latex2e as standard, use the following for latex209
+% \documentstyle [times,11pt,twoside,subeqnarray,psydraft,apa,epsf]{article}
+\input netsym
+
+% tell pdflatex to prefer .pdf files over .png files!!
+\DeclareGraphicsExtensions{.pdf,.eps,.png,.jpg,.mps,.tif}
+
+% use 0 for psypub format 
+\parskip 2pt
+% for double-spacing, determines spacing 
+%\doublespacing
+%\setstretch{1.7}
+
+\columnsep .25in   % 3/8 in column separation
+
+\def\myheading{ Leabra }
+
+% no twoside for pure apa style, use \markright with heading only
+\pagestyle{myheadings}
+\markboth{\hspace{.5in} \myheading \hfill}{\hfill O'Reilly et al \hspace{.5in}}
+
+\begin{document}
+\bibliographystyle{apa}
+
+% sloppy is the way to go!
+\sloppy \raggedbottom
+
+\def\mytitle{ The Leabra Cognitive Architecture: How to Play 20 Principles
+  with Nature and Win! }
+
+
+\def\myauthor{Randall C. O'Reilly, Thomas E. Hazy, and Seth A. Herd\\
+  Department of Psychology and Neuroscience\\
+  University of Colorado Boulder \\
+  345 UCB\\
+  Boulder, CO 80309\\
+  {\small randy.oreilly@colorado.edu}\\}
+
+\def\mynote{Draft Manuscript: Do not cite or quote without
+  permission.\\
+  Supported by ONR grant N00014-07-1-0651 and
+  NIH grants MH069597, % pfc-mega
+  MH079485. % defd
+}
+
+\def\myabstract{ In a highly influential commentary, Allen Newell
+  \yrcite{Newell73} first issued a call for a more comprehensive. principled
+  approach to studying cognition, an approach he later developed and refined
+  in his important book {\em Unified Theories of Cognition} \yrcite{Newell90}.
+  Since then, such comprehensive efforts to characterize cognition have come
+  to called {\em cognitive architectures}, and today are generally expected to
+  come with a working computational implementation. Newell argued for this
+  kind of comprehensive approach in order to avoid a proliferation of largely
+  unprincipled one-off models meant to address one cognitive phenomenon after
+  another.  ``You can't play 20 questions with nature, and win,'' he said,
+  alluding to the old parlor guessing game involving 20 yes or no questions.
+  His point, of course, was that cognition, and the brain that gives rise to
+  it, is just too complex and multidimensional a system to ever hope that a
+  series of narrowly framed experiments and/or models would ever be able to
+  characterize.  Inspired by Newell's still relevant admonition, in this
+  chapter we will play a game of ``20 principles'' in order to motivate and
+  frame a description of our evolving biologically-informed Leabra cognitive
+  architecture. Have fun!  }
+
+% **IF we do indeed get an abstract, we need to shorten the newell part and fit some more overview in there.
+
+
+% \titlesepage{\mytitle}{\myauthor}{\mynote}{\myabstract}
+% \twocolumn
+
+%\titlesamepage{\mytitle}{\myauthor}{\mynote}{\myabstract}
+ 
+\titlesamepageoc{\mytitle}{\myauthor}{\mynote}{\myabstract}
+
+% single-spaced table of contents, delete if unwanted
+% \newpage
+% \begingroup
+% \parskip 0em
+% \tableofcontents
+% \endgroup
+% \newpage
+
+% \twocolumn
+
+\pagestyle{myheadings}
+
+\section{Introduction}
+
+The Leabra cognitive architecture described in this chapter is one of several
+cognitive architectures that have been developed over the past several
+decades.  It is essentially a cumulative theory of brain function and
+cognition that attempts to use many constraints from widely varied phenomena
+from the psychological (behavioral) level, down as low as some molecular
+biology evidence, in the service of providing a theory of the computational
+principles by which individual brain areas process information and cooperate
+to make up the integrated, highly functional human mind.  Leabra of course
+falls short of this lofty ambition in many ways, but its successes in the
+attempt makes it unique and perhaps of interest to those working to understand
+the mind and brain at all levels.
+
+We proceed as follows.  We first introduce the notion of a cognitive
+architecture and their advantages in creating accurate theories of cognition,
+and the difficulties that prevent most researchers from working within them.
+We then describe a set of principles that provide an eagle's-eye view of the
+current state of the Leabra cognitive architecture project, starting from the
+principles of neural function in general, and moving to specific theories of
+neural computational function in areas underlying episodic memory, working
+memory and executive function, perception and categorization, and reward
+processing and motivational systems.
+
+As we elaborate below, a cognitive architecture can be defined as a
+mechanistically detailed theory of how cognition operates across a wide range
+of domains and tasks and which is implemented in a working computer
+simulation.  Cognitive architectures are fundamentally concerned with
+characterizing how cognition works at a mechanistic level, as opposed to mere
+descriptive or abstract theorizing.  More than perhaps any other proposed
+cognitive architecture, Leabra is informed by the underlying biology of the
+brain and employs a set of bio-realistic neural processing mechanisms as its
+mechanistic core.  In contrast to psychological-level cognitive architecture,
+Leabra focuses less on the interactions between brain systems, and more on the
+lower-level computational mechanisms by which individual brain areas get
+things done.  In many ways, it represents a natural evolution of the neural
+network / parallel distributed processing / connectionist models that were
+popular in the late 1980's and 1990's, an evolution that strongly grounds the
+mechanisms in known biology.  
+% Include here because the reader may not make it further without justification?? I feel this should happen earlier, as Tom has argued:
+% In particular, Leabra relies upon a biologically plausible variant of backpropagation
+% learning, leveraging neural dynamics and local information available to each
+% synapse.  
+Leabra also makes strong commitments to the
+large scale functional organization of the brain. This latter large scale
+organization has ended up converging to a remarkable extent with that of a
+more purely cognitively derived architecture, the ACT-R framework
+\cite{AndersonBothellByrneEtAl04}.
+
+Why should one be interested in the Leabra cognitive architecture, and in
+cognitive architectures more generally?  What can such a thing offer that
+other more focused cognitive models or theories cannot --- e.g., why is it
+worth the effort to understand a complicated theoretical framework when
+perhaps one only cares about more specific issues?  Is it premature or
+presumptuous to offer some kind of comprehensive cognitive theory, when there
+is so much we do not yet understand about how the mind/brain
+% TODO: if this is some sort of concession to Brian's ranting, then I
+% object STRONGLY; if it's just to elicit a wider connotation in the
+% reader, then I like it :)
+% AND if Tom's opinion on the worth of this phrasing depends on where it came from, then I STRONGLY object! ;) j/k, I think that mind/brain or brain/mind is EXACTLY how to express a commitment to the mind==brain function that materialists implicitly commit to but sometimes forget!
+functions?  These are some of the important questions that we attempt to
+address in this chapter.
+
+Every cognitive architecture and/or computational modeling approach has
+tradeoffs, and this chapter is particularly focused on issues especially
+relevant to the Leabra architecture. Discussion about other architectures or
+cognitive modeling generally is employed mostly for comparision purposes. The
+topic of cognitive modeling especially has been discussed extensively in the
+literature, and every framework has its own advocates that can better extol
+its virtues and identify its weaknesses.  Nevertheless, we do draw a few basic
+contrasts with some widely used architectures that serve to highlight various
+issues.
+
+First, it is important to note that there are good reasons why relatively few
+cognitive architectures are widely used outside the labs in which they were
+developed.  There
+is a good deal of implementational, sociological, and theoretical overhead
+involved in working within any cognitive architecture that often prevents
+their adoption despite their significant advantages.
+% Below seemed wordy and unnecessary.
+% (And, to remember that popularity does not necessarily reflect on the
+% scientific importance of these architectures.)  There are several forces
+% arrayed against the broad adoption of any given architecture, including the
+% fact that serious modelers prefer to ``roll their own'' and thus have full
+% control of the system. It also takes a significant investment of time and
+% effort to understand any given architecture to the point of using it
+% productively, and there are likely to be scientific points of disagreement, or
+% even more subtle matters of differences in taste and style between developers
+% and would-be adopters. Finally, there is the academic sociological issue of
+% whether one would get appropriate credit for the work by adopting someone
+% else's model, or would the original developers perhaps receive an inordinate
+% amount of the credit?  
+These are all quite reasonable concerns, and they tend to scale in proportion
+to the complexity and specialized nature of the architecture in question,
+while being mitigated by various other countervailing forces, including: the
+extent to which it is shaped by reasonable, objective criteria, as opposed to
+being shaped by more idiosyncratic preferences; and the power and generality
+of the framework for solving problems of interest.
+
+
+To clarify by comparison, we consider two of the more widely adopted cognitive
+modeling frameworks, both of which fall short of this definition of a
+full-fledged cognitive architecture:
+\begin{itemize}
+\item {\bf Error backpropagation neural networks:} These were invented several
+  times \cite{BrysonHo69,Werbos74,RumelhartHintonWilliams86,RumelhartMcClelland86,
+    McClellandRumelhart86}, in the context of a longer tradition of research
+  on neural networks (e.g., perceptrons and the earlier delta rule
+  \nopcite{Rosenblatt59,Rosenblatt62,MinskyPapert69,WidrowHoff60}), and are
+determined by a clear objective criterion (error minimization through gradient
+descent).  Furthermore, the math is relative simple, and they are extremely
+powerful and general-purpose.  Consistent with the above factors, this
+modeling framework has been very broadly adopted.
+\item {\bf Bayesian models:} These have very similar characteristics to
+  backprop nets: a long history of incremental development by many people,
+  clear objective criteria, and considerable power and generality.  And they
+  are similarly being very widely adopted.
+\end{itemize}
+
+These modeling frameworks are so general-purpose and precisely mathematically
+defined that they can perhaps be more properly categorized as mathematical
+tools.  The adoption of these tools suggests a certain approach to creating
+theories, but neither of these approaches is highly cumulative.  Explanations
+of phenomena within these frameworks across time and publications do not
+strongly constrain explanations of new phenomena: there is no requirement of
+internal consistency.  By this definition, a true cognitive architecture at
+least strives for such internal consistency, and so each explanation is more
+highly constrained by more data and, in some respects, therefore more likely
+to be true.
+
+% akin to something like the Fourier transform or linear regression
+% (indeed, backpropagation is actually a form of nonlinear regression).  To what
+% extent do these tools place strong constraints on the nature of a specific
+% implemented model?  The skeptic can justifiably wonder if we are really
+% learning about how the brain or mind functions when we use one of these
+% frameworks, or are we just doing some powerful mathematics?  In general, it
+% seems that most people are comfortable thinking of a generalized linear model
+% (GLM) as a purely mathematical tool for analyzing and describing cognitive
+% data --- to what extent is it clear that Bayesian or backpropagation models
+% have a different status?
+
+The merits of a cumulative theory are most prominently described by Allen
+Newell in his famous ``You can't play 20 questions with nature and win''
+commentary \cite{Newell73}.  He suggested that a comprehensive, principled,
+and constrained approach to cognitive modeling will be more likely to bear
+fruit than making a bunch of one-off models of specific phenomena using
+flexible yet underconstrained modeling tools, which he likens to answering
+individual binary questions like in the classic ``20 questions'' game (e.g.,
+is visual search parallel or serial?).  In that paper, and later in his
+influential book {\em Unified Theories of Cognition} \yrcite{Newell90}, Newell
+advocated developing a strongly-constrained and comprehensive framework, i.e.,
+what has come to be known as a {\em cognitive architecture}, and applying it
+to many different cognitive phenomena, each of which tests the
+theory/architecture in different ways.  If a cumulative theory can
+successfully do that, then there is good reason to believe in its validity as
+a model of human cognition.  Otherwise, it is simply too easy to fit any given
+small subset of phenomena with any theory of limited scope.
+
+Newell's argument is really just an instance of the basic idea that scientific
+theories that account for more data are better than those that account for
+less.  But in the context of cognition, the point is particularly pressing,
+because the brain/mind is such a powerful and complex thing --- any given
+small window onto it will fail to reveal the global principles that operate
+across all of the windows.  This is similar to the case of the blind men
+describing different parts of an elephant.  You need the big picture to put
+all these parts into proper perspective.  A good cognitive architecture can
+provide this kind of big picture framework.  Furthermore, unlike the state of
+knowledge in Newell's day, the explosion of biological data now available
+about how the brain functions can --- and probably should --- strongly inform
+and constrain the development of any cognitive architecture.  The brain is not
+equally good at all sorts of algorithms, and much detailed functional
+physiology is aimed at determining exactly what algorithms are effectively
+being performed by individual areas.  When bottom-up biologically-based
+constraints converge with top-down constraints imposed by cognitive data, one
+can have more confidence in the proposed mechanisms.  Leabra appears to be
+unique in the extent to which it attempts to use cumulative constraints from
+these levels.
+
+In light of the points presented above, it has hopefully become rather obvious
+to most readers that the big picture perspective fostered by cognitive
+architectures can be important for making cumulative progress in understanding
+human cognition.  But these architectures also incur many of the costs
+enumerated above that make it more difficult for others to actually use them
+in their own work: they become more complex, less general-purpose, more tied
+to specific theoretical claims, and less obviously derived from singular
+objective principles.  Thus, it is difficult to successfully navigate between
+these scientific and practical tradeoffs, to develop a cognitive architecture
+that is at once comprehensive and strongly constrained, but also broadly
+appealing and widely adopted.  And this is not just a matter of a popularity
+contest --- it is difficult for one lab to properly explore the full breadth
+of cognitive phenomena in relation to a given set of theoretical principles,
+so the more people who can be involved in testing and developing a given
+architecture, the more scientific progress can be made.  From a rational
+resource allocation perspective, the duplication of effort represented by the
+proliferation of architectures and other models seems wasteful.  In other
+words, cumulative progress in science, with the efforts of individual
+researchers building upon each other, is clearly more productive than the
+diffusion of effort and ideas that characterizes the field at this point.
+Presumably, such a convergence of effort awaits a compelling demonstration
+that a given cognitive architecture has sufficient promise to overcome the
+various barriers outlined above.
+
+Before we introduce the Leabra cognitive architecture in the context of the
+above issues, we consider what is probably the most popular cognitive
+architecture for cognitive modeling: the ACT-R architecture.  This
+architecture has largely been developed by a single lab (John Anderson,
+Christian Lebiere, and a few others), and it is complex and not uniquely
+determined by a single objective function.  Despite these potential barriers,
+it attracts users due to its power for simulating complex cognitive functions,
+in a way that accords with both behavioral and functional neuroimaging data.
+Furthermore, persuasive principled arguments have been made in motivating its
+design \cite{Anderson83,Anderson90,Anderson93,AndersonBothellByrneEtAl04}.
+Thus, for the domains in which it has typically been used, adopting the ACT-R
+framework may prove to be worth the investment in time and effort compared to
+attempting to develop an alternative architecture that has any prospect of
+achieving similar levels of success in taming complex cognitive problems in a
+cognitively accurate manner.  Nevertheless, even within the broader ACT-R
+framework, there has been a proliferation of different versions and forks of
+the architecture, with differing levels of committment to a common set of
+principles.  Thus, there is a constant tension between the Newell principle of
+convergence, and the practical considerations of individual researchers.
+
+In contrast with ACT-R's long track record as a mature cognitive architecture,
+the Leabra framework has only recently reached a level of maturity that it can
+be used for simulating complex temporally-extended cognitive functions.
+Heretofore, it had instead been developed and applied mostly in the context of
+more focal functions associated with specific brain areas, such as the
+hippocampus, prefrontal cortex, and areas of the posterior cortex.  As such,
+it has had to compete with more specialized models of these systems that use a
+variety of modeling frameworks, often ones that are both simpler and directly
+targeted at the domain in question.  Thus, the advantages of being a
+full-fledged cognitive architecture have not been as clearly evident, or even
+relevant.  Nonetheless, the ideas and principles developed within these
+specific Leabra models have been used to constrain other models, qualifying
+the project as cumulative, and impactful, with a number of papers garnering
+hundreds of citations \cite{refs}.  Perhaps the best evidence that Leabra is
+indeed a robust theoretical framework and thus a good candidate for a proper
+cognitive architecture has been the relatively wide adoption of a textbook
+\cite{OReillyMunakata00} at several universities around the world. This
+textbook provides numerous examples of how a single small set of
+biologically-based computational mechanisms can give rise to a wide range of
+cognitive phenomena in the domains of learning and memory, perception,
+language, and executive function. It is in use in roughly 20-30 different
+universities, and Leabra has now been adopted by perhaps a similar number of
+researchers for specific cognitive modeling projects.
+
+Thus, Leabra has already established a track record as an at least moderately
+well-regarded cognitive architecture, a popularity that has grown organically
+as Leabra has expanded in scope and therefore in its cumulative nature. Thus,
+an important goal of this chapter is to explicitly define Leabra as a {\em
+  cognitive architecture} and thereby to introduce it to a broader potential
+audience, while also providing a concise, principled overview of its design to
+help overcome some of the barriers to adoption described above.  In addition,
+many of the central computational mechanisms in Leabra have been updated
+recently (while of course remaining true to the original guiding principles),
+and a new version of the textbook has been released in a freely available
+online format at \verb\http://ccnbook.colorado.edu\ 
+\cite{OReillyMunakataFrankEtAl12}, so this is an opportune time for
+summarizing the current state of the architecture.  We refer the reader to
+this resource for the specific equations used in Leabra, along with many
+implemented models illustrating its behavior.
+
+todo: figures from pptx
+
+To give a brief sense of some of the most recent, cutting-edge Leabra models,
+Figure~\ref{fig.icarus} shows the model from the ICArUS project which is
+attempting to develop an {\em integrated cognitive architecture for
+  understanding sensemaking} --- this project represents a collaboration among
+several different labs, and the model can simulate human behavior on a series
+of complex sensemaking tasks, while providing insights into the biological
+basis of cognitive biases in these domains.  Figure~\ref{fig.emer} shows a
+model of an embodied cognitive agent, called {\em emer} (after the {\em
+  emergent} software in which Leabra is implemented), which performs basic
+visual saccades using coordinated head and eye movements via a simulated
+cerebellar system, and can then recognize the object in the focus of
+attention, with high levels of accuracy for 100 different object categories,
+even novel objects from these categories (over 90\% generalization accuracy;
+\cite{OReillyEtAlLvis}).  Ongoing work is developing the ability to use a wide
+range of cues and gestalt principles to separate figure from ground, to enable
+robust object recognition even in cluttered visual scenes.
+
+In this chapter, we motivate the big picture of Leabra by playing ``20
+principles'' with nature --- outlining 20 principles (many stolen from others)
+spanning many different levels and domains that describe the Leabra cognitive architecture at the broad level and, we argue, capture some important
+truths about how the brain and cognition operate (see \nopcite{OReilly98} for
+an earlier attempt to articulate some of these principles).  Although 20
+principles may sound like a lot, we argue that the brain is a very complex
+system and a larger set of principles is needed to characterize it.  As with
+20 questions, we start with very broad principles that shape the overall
+approach, and then develop a set of more specific principles of neural
+computation based on solid neuroscience data that strongly constrain our model
+of the microstructure of cognition.  Next, we advance principles of
+large-scale brain area specializations that constitute a macrostructural
+description of the cognitive architecture.  Critically, many of these
+macrostructural principles are derived directly from properties of the
+microstructure, which is essential for establishing a truly integrated,
+unified theory of cognition, as opposed to just a laundry list of isolated
+ideas.
+
+Our key criteria for elevating something to the level of a principle are: (a)
+it can be summarized briefly and makes a strong positive assertion; and (b) the
+truth-value of the assertion is directly consequential for a decision about
+how the architecture should be shaped. 
+% (c) the set of principles together
+% provide sufficient constraints that reasonable people can see how the specific
+% Leabra architecture follows from them.
+% The above really isn't helping, and is a can of worms as Alex pointed out.
+Thus, the reader can hopefully decide
+the extent to which they agree with the various principles, and thus have a
+better handle on evaluating the architecture overall.  We also attempt to
+provide some contrasting examples to demonstrate that these principles are not
+universal platitudes.
+
+\section{Guiding Principles in the Development of Leabra}
+
+The name Leabra originated as an acronym standing for {\em Local, Error-driven
+  and Associative, Biologically Realistic Algorithm} to reflect its core focus
+on the nature of learning (a locally-computable combination of error-driven
+and Hebbian associative mechanisms). It is pronounced like ``Libra'', which
+provides metaphorical inspiration in terms of striving to strike an
+appropriate balance between many different competing forces and considerations
+in the construction of a coherent framework for cognitive modeling (i.e., {\em
+  computational cognitive neuroscience}).  Thus, this approach is antithetical
+to ``purist'' approaches that attempt to optimize a single criterion or
+objective function.  Here are the broad principles that shape the overall
+approach in developing the Leabra architecture:
+
+{\bf Principle 1 (Balance):} {\em There are important tradeoffs associated
+  with almost every approach, objective, or computational solution, and often
+  the best overall solution represents a compromise or other form of
+  integration of multiple different approaches/objectives/solutions.}
+
+Although this principle may seem obvious, many computational modeling
+approaches favor purity and simplicity over dealing with the complex tradeoffs
+apparent in the brain and cognition.  Simple, single-principle models can be
+the best way to convey a specific idea, but often that idea must be tempered
+against various other constraints and considerations to understand in detail
+how people actually behave in a variety of contexts.
+
+{\bf Principle 2 (Biology is important):} {\em The brain is our one working
+  ``reference implementation'' of a successful cognitive system, so trying to
+  understand in detail how it works may be the one nearly-guaranteed path to a
+  cognitive architecture that accurately models the human mind.  And besides, understanding how the brain
+  works is an important endeavor in its own right. }
+
+As noted above, Leabra is one of the few cognitive architectures that is based
+so directly on the biology, and only recently have we implemented models that
+incorporate much of the full architecture --- most of the published models
+have explored the components separately.  Of course, there are significant
+practical barriers to implementing detailed biological models at a large scale
+and it is only recently that computers have become powerful enough to even
+begin to make this feasible.  This practical constraint converges with our
+next principle.
+
+{\bf Principle 3 (Ockham's Razor):} {\em Scientifically, we seek the simplest
+  model that is sufficient to account for the relevant aspects of neuroscience
+  and cognition, because this will be the easiest to understand, and the least
+  likely to go astray by overfitting the available data.}
+
+Intuitively, replicating every single biological detail would get us no closer
+to understanding how the brain works --- we already have the full complexity
+of the real brain, and any functionally irrelevant details just get in the way
+of understanding the underlying computational principles.  Many computational
+neuroscience models focus on capturing as much biological detail as possible,
+and one project that has received quite a bit of notoriety explicitly assumes
+that in so doing the magic of cognition will just emerge from all those
+details \cite{MarkramBlueBrain}.  In contrast, the Leabra approach is
+predicated on the idea that actually trying to understand what is going on at
+the psychological and mechanistic levels simultaneously is the key to
+meaningful progress. This necessarily entails the discovery and imposition of
+constraints at multiple levels and, combined with a considered effort to
+include only as much mechanistic detail as is absolutely necessary to explain
+function, is the most direct path toward understanding the principles by which
+the brain/mind works.
+
+{\bf Principle 4 (Convergent multi-level modeling):} {\em The optimal balance
+  between biological, cognitive, and computational constraints is likely to be
+  different depending on the nature and level of the questions being
+  addressed.}  
+
+Given this principle, it makes sense to develop a family of models at
+different levels of abstraction that are nonetheless mutually compatible and
+serve to constrain one another, ultimately aiming to arrive at a convergent,
+multi-level description of the system as a whole.  There are many different
+optional switches in the Leabra simulation software that can dial up or down
+the level of abstraction of any given model, and there are {\em bridging
+  simulations} that specifically test the convergence and mutual compatibility
+of abstractions at different levels of abstraction.  At the highest level of
+abstraction, the ACT-R framework shares many of the same architectural
+features as Leabra, and we are currently working to develop a {\em S}ynthesis
+of {\em A}CT-R and {\em L}eabra (SAL; \nopcite{JilkLebiereOReillyEtAl08})
+architectures that explicitly integrates features from both architectures to
+yield an even more convergent higher-level abstract architecture.  In this
+overview, we focus on the middle level of abstraction provided by the
+``default'' version of Leabra, while noting the options for increasing or
+decreasing biological detail.
+
+{\bf Principle 5 (Learning is critical):} {\em While ontogenetic development
+  is clearly of extreme importance, much of cognitive function is acquired via
+  experience-driven learning mechanisms, which sculpt the raw neural material
+  of the cortex into highly functional neural systems}
+
+The human brain learns to read and write, and a host of other novel skills
+that couldn't possibly be directly coded by our genetics.  To capture this
+kind of pervasive learning, the system must be capable of developing entirely
+new representations and cognitive abilities, not just tune a set of parameters
+within an otherwise preconfigured system.  This principle is central to the
+Leabra approach --- everything that a typical Leabra model can do involves a
+substantial learning component, using mechanisms that are intended to capture
+the essential properties of cortical learning, and supported by a critical
+bridging simulation (described below) that grounds the Leabra learning in
+known biological mechanisms.  The ability to develop complex cognitive
+functions through learning has always been one of the most important features
+of neural network models, and to this day no other framework has been
+developed that is as capable of such general-purpose, powerful learning.
+Indeed, there has recently been somewhat of a resurgence of interest in these
+neural network learning mechanisms within the statistical computing and
+machine learning communities \cite{RBM,schmidhuber,undirectedbayes,etc}.  
+
+One possible explanation for the unique suitability of neural networks for
+learning is that the ability to learn entirely new cognitive functions
+requires an at least somewhat equipotential, homogenous substrate to start
+from so that it can be shaped over time through learning --- a neural network
+provides just such a substrate.  In contrast, it is difficult to reconcile
+this equipotentiality demand with the need to have intricate, highly
+differentiated structures in the system, as is typically required to achieve
+sensible symbolic processing abilities for example.  The Leabra framework does
+allow for various forms of built-in structure and parameter differences across
+areas, but these serve to constrain and shape the properties and outcome of
+the learning mechanism, not to provide initial cognitive functionality.
+Another important factor is that learned functionality must go through many
+intermediate stages during the learning process, so whatever is learned will
+typically be sufficiently robust to support partial functionality when
+partially developed.  But many cognitive models with more elaborated,
+interdependent processing mechanisms would not function at all in a
+partially-learned state (e.g., imagine the functionality of a
+partially-implemented CPU chip).  Thus, we believe that learning provides
+considerable constraints on the nature of the system, possibly even
+accounting for the neural network basis of cognition in the brain.
+
+The central role of learning in Leabra is a critical point of contrast with
+other cognitive architectures, most of which focus on modeling the {\em
+  performance} aspects of cognition.  While trying to understand the
+mechanisms that may underly performance is clearly helpful and important, it
+also misses a big part of what makes cognition so complex --- and difficult.
+Even ACT-R, which has added several forms of learning in recent years, still
+fundamentally requires starting from a sufficient basis set of productions to
+drive the sequence of cognitive operations performed, as well as the explicit
+specification of things like the allowed forms of memory representation for
+any given task. Another interesting point of contrast is the {\em Neural
+  Engineering Framework} of \incite{EliasmithAnderson03}, which can create
+impressive neural systems through a powerful parameter-setting mechanism (see
+\verb\http://nengo.ca\ ).  But this mechanism does not represent an
+experience-driven learning mechanism.  In Leabra, it is of central importance
+both that the system develops incrementally through learning, and that the
+learning mechanism itself provides an accurate model of the learning
+mechanisms in the human brain.
+
+Next, we describe more detailed principles and their implications for the
+Leabra model, beginning with basic neural network-level principles and
+algorithms that define the {\em microstructure} of cognition
+\cite[c.f.,]{RumelhartMcClelland86,McClellandRumelhart86,McClellandRumelhart88},
+followed by a discussion of the {\em macrostructure} of cognition in terms of
+architectural principles governing our understanding of the specializations of
+different brain areas for different cognitive functionality.
+
+\section{The Microstructure of Cognition: Principles of Neural Computation}
+
+\begin{figure}
+  \centering\includegraphics[height=3in]{figs/fig_leabra_mechs_fancy}
+  \caption{\small The core microstructural properties of the Leabra
+    architecture.}
+  \label{fig.leabra_mechs}
+\end{figure}
+
+We begin this section with a set of four more principles about how information
+processing is thought to arise in the brain, and which specific types of
+neurons are most important for understanding cognition. With the possible
+exception of Principle 9, these are largely consistent with most neural
+network / parallel distributed processing / connectionist models
+\cite{McClelland93,McClellandRumelhart86,McClellandRumelhart88,RumelhartMcClelland86,OReilly98}, but not directly implemented in more abstract cognitive architectures such as ACT-R.
+
+{\bf Principle 6 (Networks of neurons are the fundamental information
+  processors in the brain):} {\em Neurons integrate many different synaptic
+  input signals from other neurons into an overall output signal that is then
+  communicated to other neurons, and this provides the core information
+  processing computation of cognition.  Simplistically, each neuron can be
+  considered as a detector, looking for particular patterns of synaptic input,
+  and alerting others when such patterns have been found.}
+
+{\bf Principle 7 (Synaptic weights encode knowledge, and adapt to support
+  learning):} {\em Synaptic inputs vary in strength as a function of sender
+  and receiver neuron activity, and this variation in strength can encode
+  knowledge, by shaping the pattern that each neuron detects.}
+
+There is now copious empirical evidence supporting this principle and it can
+probably be considered uncontroversial in the neuroscience community at this
+point \cite{ltpsynapserefs}.
+
+{\bf Principle 8 (Pyramidal neurons in neocortex are the primary information
+  processors of relevance for higher cognition):} {\em The neocortex is the
+  primary locus of cognitive functions such as object recognition, spatial
+  processing, language, motor control, and executive function, and all of the
+  long-range connectivity between cortical areas is from excitatory pyramidal
+  neurons.} 
+
+Pyramidal neurons constitute the primary information processing neurons in
+cortex.  They are excitatory, and predominantly bidirectionally
+connected with each other.  Many other subcortical brain areas make important
+contributions to cognition, but the neocortex is performs the bulk of the
+information processing, particularly for the higher functions that are most
+studied in current cognitive neuroscience.
+
+{\bf Principle 9 (Inhibitory interneurons regulate activity levels on
+  neocortex, and drive competition):} {\em This
+  inhibitory dynamic gives rise to competition among neurons, producing many
+  beneficial effects on learning and performance.}
+
+The other major neuron type in neocortex are locally-projecting inhibitory
+interneurons, of which there are a great variety, and they generally serve to
+regulate overall activity levels through GABA inhibition onto pyramidal
+neurons.  Inhibitory interneurons produce competition among pyramidal neurons,
+allowing the many benefits of biased competition for attention and executive
+function \cite{DesimoneDuncan95,HerdBanichOReilly06}.  When the inhibitory
+system goes awry, bidirectional excitation between pyramidal neurons results
+in runaway epileptiform activity. And, there is evidence that individual
+differences in GABAergic tone in prefrontal cortex can affect cognitive
+functioning \cite{SnyderHutchisonNyhusEtAl10}.
+
+The foregoing set of principles translate directly into a set of specific
+questions that must be addressed in the Leabra framework, questions that may
+have multiple answers depending on level of abstraction:
+\begin{itemize}
+\item How best to simulate the dynamic properties of the neocortical pyramidal
+  neuron (i.e., the {\em neural activation function}), to achieve a
+  computationally-tractable model that captures the most important properties
+  of neural function without unnecessary biological baggage?
+\item How best to simulate the change in synaptic strength as a function of
+  neural activity (i.e., the neural {\em learning rule}), in a way that
+  captures what is known biologically about these synaptic plasticity
+  mechanisms, while also enabling a network to learn to solve the kinds of
+  difficult cognitive problems known to be solved in different cortical brain
+  areas?
+\item How best to simulate the effects of inhibitory interneurons on network
+  dynamics (i.e., the {\em inhibition function}), in a way that again balances
+  biological fidelity with computational efficacy?
+\end{itemize}
+
+A variety of different answers to each of these questions have been proposed
+in the literature.  For example, the standard feedforward backpropagation
+network uses a simple sigmoidal rate-code equation for the neural activation
+function, simulating discrete neural spiking in terms of a real-valued number
+representing something like the rate of firing over time, and it uses a
+biologically implausible learning rule that requires error signals to somehow
+propagate backward down dendrites, across the synapse, and down the axon of
+the sending neuron.  There is no inhibition function at all, and the critical
+feature of bidirectional excitatory connectivity among pyramidal neurons is
+similarly missing.  Thus, we can reasonably argue that a feedforward backprop
+network abstracts rather far away from the known biology.  On the other end of
+the spectrum, there are many computational neuroscience models with highly
+detailed multi-compartment pyramidal neurons, employing various forms of
+biologically grounded Hebbian-style learning rules, and detailed inhibitory
+interneurons with appropriate connectivity to balance out bidirectional
+excitatory feedback loops among the pyramidal neurons
+\cite{BretteGerstner05,UrakuboHondaFroemkeEtAl08,MOREbiodetrefs}.  But these
+latter models do not actually solve complex cognitive tasks (e.g., object
+recognition in the ventral visual stream) and they take a long time to
+simulate the dynamics of even a single neuron, limiting the scale of models
+that can be constructed.
+
+Consistent with the emphasis on balance, the Leabra architecture seeks a
+middle ground between these two extremes --- computationally and cognitively
+powerful, but more closely tied to the biology and capable of exhibiting more
+complex excitatory and inhibitory dynamics that very likely play a significant
+role in many cognitive phenomena.  Within this target space, there are still
+likely to be a range of different implementational choices that will result in
+generally similar cognitive functionality.  Indeed, we know that within the
+Leabra framework different choices have been developed over time, and are
+available as options in the simulator.  Nevertheless, our current best answers
+are described in the following sections (see Figure~\ref{fig.leabra_mechs} for
+a summary).
+
+\subsection{Neural activation function}
+
+We borrow the {\em adaptive exponential} (AdEx) model of the pyramidal neuron
+\cite{BretteGerstner05}, which has won competitions for best predicting
+cortical neural firing patterns, and is on the same computational order as
+other abstract neural equations.  Conveniently, it represents just a few
+additions to the basic conductance-based point neuron equations used in the
+original Leabra model --- these add spike frequency adaptation and an
+exponential spike initiation dynamic.  The AdEx model produces discrete
+spiking outputs, but often this level of detail incurs too much computational
+overhead, so we also (frequently) employ a rate code version of these spiking
+dynamics, which enables a single neuron to approximate the behavior of a
+population of spiking neurons.  We recently discovered that our prior approach
+to capturing spiking behavior using a rate code model could be improved by,
+driving the activation output by a different neural variable.  Previously, we
+used the membrane potential, but now recognize that the rate of spiking in
+AdEx is best captured using the level of excitatory conductance directly
+($g_e$), in relationship to a threshold that reflects the inhibitory and leak
+currents.  We call this new activation function {\em gelin}, for ``linear in
+$g_e$'', and it results in more stable, systematic, and informative rate code
+activation dynamics, while preserving the same qualitative function of the
+previous activation function, and therefore the underlying computational
+principles.
+
+\subsection{Learning rule}
+
+\begin{figure}
+  \centering\includegraphics[height=2in]{figs/fig_xcal_dwt_fun}
+  \caption{\small The XCAL weight change function, plotting change in
+    synaptic weight against total synaptic activation (sender times receiver
+    activation).}
+  \label{fig.xcal_fun}
+\end{figure}
+
+A defining feature of Leabra is its integration of both error-driven and
+Hebbian (``associative'') learning mechanisms, reflecting an attempt to
+balance several tradeoffs between these two mechanisms, and obtain the ``best
+of both worlds'' from models that have demonstrated the importance of each of
+these types of learning for different cognitive phenomena.  Error-driven
+learning has proven indispensible for learning the complex cognitive mappings
+required for tasks such as object recognition, word pronunciation, and other
+similar challenging problems \cite{OReilly96b,OReilly98,OReillyMunakata00}.  Hebbian
+learning alone can account for some statistical learning in various domains,
+such as extracting the statistics of visual images in primary visual cortex
+\cite{OlshausenField96,OlshausenField97}.  The combination of these two forms
+of learning was originally achieved by simply adding together both learning
+effects \cite{OReillyMunakata00}.  In what we consider an important new
+development, the latest version of the learning rule implements a much more
+integrated way of achieving this same objective using an elegant single
+learning rule that is directly and deeply grounded in the known biology of
+synaptic plasticity, and naturally results in both error-driven and Hebbian
+learning within a single framework.
+
+Specifically, we leveraged a compellingly detailed and highly recommended model of
+{\em spike-timing dependent plasticity (STDP)} by
+\incite{UrakuboHondaFroemkeEtAl08} to extract a more comprehensive learning rule that is operative over longer time scales and larger neuronal populations. When initially discovered using spike pairs, it was found that STDP displayed an intriguing causal learning dynamic, where synaptic weights go up when the sending neuron fires before the receiving one, and down otherwise. However, it is becoming increasingly clear that this causal regime is not really very relevant for the kinds of complex extended spike trains that are typical within cortical networks
+\cite{FroemkeDan02,RubinGerkinBiEtAl05,ShouvalWangWittenberg10,WangGerkinNauenEtAl05,stdpsucks} and thus, not surprisingly, it has not scaled well at all to larger to these circumstances.  For example, increasing spike complexity to just triplets or quadruplets shows that the simple causal pairwise dynamic does not generalize
+\cite{FroemkeDan02,RubinGerkinBiEtAl05,WangGerkinNauenEtAl05}.  We wondered what would happen if we adapted the \incite{UrakuboHondaFroemkeEtAl08} model to use temporally-extended spike trains of different frequencies and durations? To find out, we presented a wide range of Poisson spike trains of sending and receiving activity to the model, and measured the pattern pf synaptic plasticity that resulted.  Somewhat to our surprise, we were able to fit the results with a simple piecewise-linear function that captured roughly 80\% of the variance
+in the synaptic plasticity in terms of the product of the sending and receiving net activity (spiking frequency times duration; Figure~\ref{fig.xcal_fun}).
+
+This function is turned out to be essentially a linearized version of the \incite{BienenstockCooperMunro82} learning rule {\em (BCM)}, which introduced a floating threshold that imposes a long term homeostatic dynamic on top of a fast Hebbian-like learning dynamic: weight changes fundamentally track the co-activation of the receiving and sending neurons (``neurons that fire together wire together'').  If a receiving neuron is overly active over a long time scale, then the threshold moves proportionally higher, causing weights to be more likely to go down than up, thus preventing neurons from ``hogging'' the representational space.  A reverse dynamic obtains for chronically under-active neurons, causing their threshold to move down, and making their weights more likely to increase, bringing them back into the game.
+
+Thus, a simple piecewise-linear learning rule initially extracted from the
+\incite{UrakuboHondaFroemkeEtAl08} model immediately captured a sophisticated
+and high-performing version of Hebbian learning. What about the error-driven
+component?  We realized that error-driven learning could be obtained from this
+equation if the floating threshold also moved on a much more rapid time scale,
+such that the threshold reflects an {\em expectation} state in comparison to
+an {\em outcome} state reflected in the synaptic net activity value that
+drives learning.  To illustrate how this achieves error-driven learning,
+consider two neurons that together are activated as part of a network encoding
+an incorrect {\em dishtowel}.  Huh?  You probably didn't expect that word ---
+hopefully you were expecting to read the word {\em expectation} --- there is
+considerable evidence that we are constantly forming these expectations, and
+we exhibit characteristic brain activity patterns when they are violated
+\cite{P300}.  Anyway, we assume that these two neurons were encoding the word
+{\em expectation}, and they would have high synaptic activity for a while as
+the expectation of this word develops, only to become inhibited by the
+activation of the actual outcome ``dishtowel'' neurons, resulting in
+subsequent low synaptic activity.  The expectation activity causes the
+floating threshold to move up proportionally, and when the actual outcome
+activation comes in, it is below this expectation resulting in a reduction of
+synaptic weights, and thus a reduced tendency to make this expectation in this
+situation next time around.  In contrast, the actual outcome ``dishtowel''
+neurons have a low expectation activity, so their subsequent outcome activity
+exceeds this threshold and the weights increase, increasing the expectation of
+this word next time around.  Despite the silly nature of this example
+(typically the outcomes we experience in the world are more predictable and
+useful sources of learning), one can hopefully see how this achieves robust
+error-driven learning, which is known to be capable of learning cognitively
+challenging problems.
+
+Thus, to achieve an integration of this error-driven learning dynamic with a
+Hebbian self-organizing learning dynamic, one only needs to combine the
+BCM-like slowly adapting component with the error-driven fast component into a
+single dynamic threshold.  Thus, the threshold moves at multiple different
+superimposed time constants, and hence achieves a balance of both error-driven
+and Hebbian learning.  Furthermore, consistent with the extensive work with
+the BCM algorithm, this form of Hebbian learning is actually more powerful and
+robust than the standard form of Hebbian learning used in Leabra previously
+\cite{bcm cites}.
+
+Another way of thinking about this process is in terms of attractor dynamics
+and LTP/LTD. Essentially, the synaptic states associated with {\em later}
+activation states (settled fixed point attractors) always and continuously
+trains synaptic states associated with activations immediately prior during
+the {\em earlier} stages of settling.  Intracellular calcium concentrations
+(ICC) for those synapses {\em more} active at the end of settling get driven into
+the LTP zone (sustained high ICC), while those sufficiently active early, but later
+inactive/less active, end up in the low-moderate LTD zone.  Thus, it is not
+really errors per se that drive "error-driven" learning, but the contrast in
+synaptic activity that occurs between early and late stages of settling as a
+result of the inherent attractor dynamics of recurrent and
+inhibition-constrained neural networks.
+
+\subsection{Inhibition Function}
+
+\begin{figure}
+  \centering\includegraphics[width=6in]{figs/fig_kwta_avg_distrib}
+  \caption{\small Average-based kWTA inhibition function.}
+  \label{fig.kwta_avg}
+\end{figure}
+
+Beyond its importance for keeping the bidirectional excitatory loops between
+pyramidal neurons in check, inhibition in the neocortex has important
+computational implications.  For example, it causes pyramidal neurons to
+compete with each other for the opportunity to represent the current inputs.
+This competition in turn produces many of the effects of Darwinian evolution:
+neurons learn to specialize on representing a specific ``niche'' of input
+patterns, producing more differentiated and informative overall
+representations.  This competitive learning dynamic has been leveraged in a
+number of neural network models \cite{JacobJordanNowlanEtAl91,Kohonen77,Kohonen82,Kohonen82b,Kohonen84,Nowlan90,Nowlan91,RumelhartZipser85,RumelhartZipser86}, but it is notably absent in the backpropagation framework (although a recent model was able to add it: \cite{SaraLaslo}).
+
+There are five major paradigms of competitive inhibition that have been
+developed, including the null case:
+\begin{itemize}
+\item {\bf Independence (fully distributed):} The activation of each neural
+  unit is completely independent of the others, i.e., there is no inhibitory
+  competition at all --- this is easy to analyze mathematically, and
+  automatically allows for complex distributed, overlapping patterns of neural
+  activity to encode information, which has numerous computational advantages
+  in efficiency, generalization, etc. \cite{RumelhartHintonWilliams86}.  However, it obviously
+  foregoes any of the advantages of competitive inhibition in creating more
+  specialized, finely-tuned representations.
+\item {\bf Winner-Takes-All (WTA):} A single neural unit within a layer (pool)
+  of competing units is selected to be active (typically the one with the
+  highest level of excitatory input).  This is easy to implement
+  computationally, but greatly restricts the power of the representation --- a
+  single unit cannot encode similarity in terms of relative degree of overlap,
+  and it cannot easily support generalization to novel instances, which
+  typically requires novel combinations of distributed neural activity.
+\item {\bf WTA with topography:} The neighboring units around the winning one
+  are also activated, typically with a gaussian normal ``bump''.  This was
+  pioneered by \incite{Kohonen84} and produces a topographically-organized distribution
+  of representations.  But, since the active units are not independent, it does not allow for differential activation of
+  the units in a different context, and thus is not nearly as powerful as a distributed pattern of
+  activity for encoding similarity in a high-dimensional space, or generalization to novel instances.
+\item {\bf Normalization with contrast enhancement (softmax):} The activations
+  of all units in a layer are normalized to sum to a constant value (typically
+  1), often with a contrast-enhancing nonlinearity (e.g., an exponential
+  function) applied to produce a more differentiated pattern of resulting
+  activity.  This can also be thought of as a ``soft'' form of the WTA
+  function, and sometimes a single winning unit is selected by using the
+  normalized values as a probability distribution, instead of using the raw
+  normalized values as rate-code like activations.  This fundamentally has the
+  same constraints as WTA, even though the activity distributions can be more
+  graded across units --- it is difficult to obtain a stable distributed
+  pattern of activation across the units to encode high-dimensional similarity
+  and generalize to novel cases.
+\item {\bf kWTA (sparse distributed, used in Leabra):} A target number $k>=1$
+  of neural units within a layer are allowed to be active, enabling a sparse
+  but still distributed pattern of activity within the layer.  This represents
+  a balance between fully distributed and fully competitive dynamics, and is
+  another example of a balance employed in the Leabra algorithm to obtain the
+  best of both worlds.  The multiple active neural units can encode
+  high-dimensional similarity and support generalization in the form of novel
+  combinations of active units, but there is also a competitive pressure that
+  causes neurons to specialize more than in the fully independent case.  The
+  computational advantages of sparse distributed representations have been
+  explored in depth by \incite{OlshausenField96,OlshausenField97}.
+\item {\bf Inhibitory interneurons:} The inhibitory circuits in neocortex can
+  be simulated directly, resulting in more complex and potentially realistic
+  dynamics than kWTA.  Such a biologically detailed model is considerably more
+  computationally expensive, requiring significantly slower rate constants to
+  avoid oscillatory dynamics from the feedback loops present, in addition to
+  the greater number of neurons and neural connections.
+\end{itemize}
+
+The kWTA function in Leabra is implemented in a very computationally efficient
+manner, resulting in very low extra computational cost relative to having no
+inhibition at all.  This is achieved with an optimized partial sort of the
+neurons in a layer according to the amount of inhibition that would be
+required to put each neuron exactly at its firing threshold, creating two
+groups: those within the top $k$ and the remainder
+(Figure~\ref{fig.kwta_avg}).  In the most commonly used kWTA variant, a global
+level of inhibition within a layer is computed as some fraction of the way
+between the average of this threshold-level inhibition for the top $k$ versus
+the average of the remainder.  This tends to result in the top $k$ neurons
+being above their firing thresholds, while the remainder are below, but there
+is considerable flexibility in the actual levels of activity depending on the
+exact distribution of excitation throughout the layer.  This flexibility
+enables more appropriate representations to develop through learning, compared
+to requiring an exactly fixed level of activity for each input pattern.
+
+Across many models of different cognitive phenomena, this kWTA inhibition
+function has proven to be one of the most important features of the Leabra
+architecture, rivaling or perhaps even exceeding the nature of the learning
+rule in importance for producing powerful learning that generalizes well to
+new situations.  It is also one of the most distinctive aspects of the
+architecture --- we are not aware of another major computational modeling
+framework with this form of inhibition function.
+
+In keeping with the multi-level modeling principle, it is also possible to run
+Leabra networks with explicit inhibitory interneurons, and bridging
+simulations have been developed that establish the convergence between the
+more biologically detailed models with inhibitory interneurons and those using
+the kWTA inhibition function abstraction.  However, these more detailed models
+also may exhibit important differences in overall activation dynamics --- for
+example there is typically more of a wave of excitation driven by a new input
+pattern that is then damped down, with some ongoing oscillations --- these
+waves have been observed in recordings from neocortical neurons, and may have
+important functional implications.  In contrast, the kWTA dynamics are more
+tightly controlled, but we have also added the option of superimposing these
+wave dynamics on top of kWTA --- these waves can improve learning in some situations, but more work remains to be done to explore the
+issues.
+
+
+\section{The Macrostructure of Cognition: Brain Area Functional Specializations}
+
+The principles and mechanisms just described characterize the microstructure
+of cognition --- how cognition operates at the finest scale of individual
+neurons and synapses.  Now, we turn to the macrostructure and how different
+brain areas are specialized for different aspects of cognitive function.  Some
+relevant questions here include: is there any relationship between the micro
+and macro levels?  Along what kind of dimensions are brain areas specialized:
+by content domain, by processing style, or by modular cognitive building
+blocks?  In other words, what are the big chunks of cognition in the brain,
+the combined contributions of which can explain the full spectrum of cognitive
+abilities?  To address these important questions, we again begin by
+enumerating four additional principles, which will help clarify the stance we
+have taken in Leabra.  The first overarching principle concerns the
+relationship between the microstructure and macrostructure:
+
+{\bf Principle 10 (Micro-macro interactions):} {\em The microstructural
+  principles and associated mechanisms characterize the fabric of cognition,
+  so they also define the space over which macrostructural specializations can
+  take place --- in other words, we should be able to define different
+  specialized brain areas in terms of different parameterizations of the
+  microstructural mechanisms.  Furthermore, the system is fundamentally still
+  just a giant neural network operating according to the microstructural
+  principles, so brain areas are likely to be mutually interactive and
+  interdependent upon each other in any given cognitive task.}
+
+This principle implies a more subtle form of specialization than is typically
+offered in cognitive theorizing: parametric differences typically do not lead
+to the kinds of discrete cognitive functions popular in traditional ``box and
+arrow'' information processing models of cognition.
+
+\begin{figure}
+  \centering\includegraphics[height=3in]{figs/fig_tripartite_model_bg_ctr}
+  \caption{\small The macrostructure of the Leabra architecture.}
+  \label{fig.tripartite_model}
+\end{figure}
+
+The broadest macrostructural organization of the Leabra architecture is shown
+in Figure~\ref{fig.tripartite_model}, where each of the three major components
+of the system (posterior cortex, prefrontal cortex, and hippocampus) are
+defined by parametric specializations relative to the generic microstructural
+mechanisms described above.  The posterior cortex is characterized by
+coarse-coding distributed overlapping representations that learn slowly over
+time to encode the world in an efficient way using hierarchically structured,
+specialized neural pathways, which support basic functions such as object
+recognition, perceptually-guided motor control, auditory processing, language
+comprehension, and higher-level semantic knowledge.  This system is well
+captured by a ``generic'' Leabra neural network with roughly 15-25\% activity
+levels in the kWTA inhibition function, and relatively slow learning rates,
+which enable the system to integrate over many different experiences to
+extract these useful representations.
+
+Relative to this posterior cortical baseline, the hippocampus and prefrontal
+cortex each have different parametric specializations that enable them to do
+things that the posterior cortex cannot, because of important fundamental
+tradeoffs (c.f., Principle \#1) that are enumerated in the principles
+described below.
+
+\subsection{Learning and Memory Specializations: Hippocampus vs. Cortex}
+
+\begin{figure}
+  \centering\includegraphics[width=6in]{figs/fig_hippo_mem_formation}
+  \caption{\small Structure of the hippocampal memory system and
+    associated medial temporal lobe cortical structures}
+  \label{fig.hippo}
+\end{figure}
+
+\begin{figure}
+  \centering\includegraphics[height=3in]{figs/fig_patsep_clr}
+  \caption{\small Pattern separation as a result of sparse activity
+    levels in hippocampus relative to cortex.}
+  \label{fig.patsep}
+\end{figure}
+
+
+% Seems like these figures would make a lot more sense if they were reversed!
+%
+%
+
+
+We can identify a set of functional tradeoffs in learning and memory that
+motivate the understanding about how the hippocampus (Figure~\ref{fig.hippo})
+is specialized for episodic memory relative to the more semantic forms of
+memory supported by the posterior cortex.
+
+{\bf Principle 11 (Interference and overlap):} {\em Learning new information
+  can interfere with existing memories to the extent that the same neurons and
+  synapses are reused --- this directly overwrites the prior synaptic
+  knowledge.  Hence, the rapid learning of new information with minimal
+  interference requires minimizing the neural overlap between memories.}
+
+{\bf Principle 12 (Pattern separation and sparseness):} {\em Increasing the
+  level of inhibitory competition among neurons, which produces
+  correspondingly more sparse patterns of activity, results in reduced overlap
+  (i.e., increased pattern separation) (Figure~\ref{fig.patsep}).}
+
+Intuitively, pattern separation arises because the odds of a neuron exceeding
+a high threshold twice (assuming statistical independence) is like squaring a
+low probability --- it goes down quadratically \cite{Marr71}.  For example,
+with a 1\% chance of getting active, the probability of doing it twice is
+$0.01^2 = 0.0001$ --- a very small number.
+
+
+{\bf Principle 13 (Tradeoffs in separation vs. overlap):} {\em While
+  increasingly sparse representations result in decreased interference through
+  pattern separation, they also reduce the ability to generalize knowledge
+  across experiences, for the same reason --- when different neurons and
+  synapses encode each experience, then there is no opportunity to integrate
+  across them (e.g., to extract statistical patterns).}
+
+This tradeoff implies that achieving both of these learning goals (memorizing
+specifics and extracting generalities) requires two different systems, one
+with sparse representations for memorizing specifics, and another with
+overlapping distributed representations for extracting generalities
+\cite{McClellandMcNaughtonOReilly95,SherrySchacter87}.
+
+These principles provide a compelling explanation for the properties of the
+hippocampus for memorizing specific information including specific episodes
+(i.e., episodic memory), in contrast to a neocortical network that uses
+overlapping distributed representations to extract more generalized semantic
+information about the world.  The CA3, CA1, and especially DG layers of the
+hippocampus have very sparse levels of activity, and corresponding pattern
+separation has been demonstrated through a variety of techniques
+\cite{GilbertKesnerLee01,LeutgebLeutgebMoserEtAl07,McHughJonesQuinnEtAl07,
+  BakkerKirwanMillerEtAl08}.  See \incite{OReillyBhattacharyyaHowardEtAl12}
+for a recent review of all the evidence consistent with this {\em
+  complementary learning systems} account of the difference between
+hippocampus and neocortex.
+
+In the latest version of the Leabra architecture, we have developed a more
+powerful version of hippocampal learning, which leverages the different theta
+phase relationships of the hippocampal layers to drive error-driven learning
+\cite{KetzEtAlInPrep}, instead of relying on purely Hebbian learning, which
+has been a feature of most computational models of the hippocampus.  In brief,
+this new model contrasts the retrieved pattern with the pattern to be encoded
+and uses the difference as an error signal, which trains subsequent retrieval
+in just the ways it needs to be modified to be more accurate, without the less
+selective and therefore more interference-prone Hebbian associative learning.
+In addition, these theta phase dynamics also drive error-driven learning of
+the invertible decoder pathway between CA1 and EC, which is necessary for
+recalling hippocampal memories back into the ``language'' of the cortex.  In
+all, there are four distinct phase relationships, so we refer to this as the
+{\em quad phase} hippocampal model, and it has significantly higher capacity
+than a comparable Hebbian model \cite{KetzEtAlInPrep}.
+
+There are many important implications of the combined hippocampal and
+neocortical learning systems for behavior of the overall Leabra architecture.
+The hippocampus enables rapid (as fast as a single trial) encoding of
+arbitrary combinations of information.  It also automatically contextualizes
+information, binding everything occurring at a given point in time together
+(since it receives information from most higher cortical areas).  This enables
+behavior to be appropriately context-sensitive, preventing
+over-generalization.  For example, negative outcomes can be appropriately
+contextualized via the hippocampus, preventing a generalized state of anxiety
+from pervading the system.  In addition, the hippocampal system is also
+constantly and automatically retrieving prior memories as triggered by the
+current inputs --- this provides an important source of constraint and
+background knowledge for many situations.
+
+
+\subsection{Active Maintenance and Executive Function Specializations: Frontal
+  \& Basal Ganglia vs. Posterior Cortex}
+
+\begin{figure}
+  \centering\includegraphics[height=2in]{figs/fig_pbwm_architecture}
+  \caption{\small The PBWM (prefrontal cortex basal ganglia working
+    memory) component of the Leabra architecture, capturing the dynamic gating
+    of prefrontal cortex active maintenance by the basal ganglia, which is in
+    turn modulated by phasic dopamine signals to learn what is important to
+    maintain.  The PVLV (primary value, learned value) system provides a
+    biologically-based model of the dopaminergic system. }
+  \label{fig.pbwm_architecture}
+\end{figure}
+
+Another critical tradeoff motivates the architectural distinction between the
+frontal cortex versus the posterior cortex, in terms of the neural
+specializations required to sustain information in an active state (i.e.,
+ongoing neural firing).  First, we note that maintenance of information in a
+neural network (over at least a short time period) can be supported by either
+sustained neural firing of a population of neurons, or by synaptic weight
+changes.  What are the relative tradeoffs between these two forms of
+information maintenance, and what kinds of neural specializations are required
+to support the maintenance of active neural firing?  Again, we start with two
+more principles.
+
+{\bf Principle 14 (Activation-based memory is more flexible than weight-based
+  memory changes, and crucial for exerting top-down control):} {\em Changes in
+  neural firing can generally happen faster and have broader and more general
+  effects than weight changes.}
+
+Changes in neural firing are much more flexible than weight changes because a
+new state can be rapidly activated to replace an old one, whereas weight
+changes can typically require multiple iterations to accumulate before there
+can be a measurable impact and require a subsequent change in activation in
+any event.  Furthermore, active neural firing can immediately and directly
+influence the activity states of other neurons in the network (top-down
+biasing), whereas weight changes are latent most of the time and require the
+(re)activation of those same neurons in order to exert a biasing effect
+\cite{MortonMunakata02}.
+
+{\bf Principle 15 (Tradeoff between updating and maintenance):} {\em There is
+  a tradeoff between the neural parameters that promote the stable (robust)
+  active maintenance of information over time, and those that enable activity
+  patterns to be rapidly updated in response to new inputs.}  
+
+Robust maintenance requires strong recurrent excitation among maintaining
+neurons, and/or strong intrinsic excitatory currents, relative to the drive
+from other inputs, so that the maintained information is not overwritten by
+new inputs.  In contrast, rapid updating requires that those maintenance
+factors be weakened in order for external inputs to outcompete existing
+representations.  Thus, there can be no static setting of parameters that will
+make a system capable of doing both robust maintenance and rapid updating in a
+general-purpose and ecologically adpaptive way (While it would be possible to
+set parameters so as to rapidly update some information easily and robustly
+maintain {\em other} information, based on specific weight patterns, the
+rigidity of that approach would not be very useful).
+
+{\bf Principle 16 (Dynamic gating):} {\em A dynamic gating system can resolve
+  the fundamental tradeoff between rapid updating and robust maintenance by
+  dynamically switching between these two modes.}  
+
+We can distinguish the frontal cortex (especially the {\em prefrontal cortex,
+  PFC}) from the posterior cortex in terms of an ability to robustly maintain
+information using active neural firing over time.  There are multiple
+specialized neural mechanisms in the PFC relative to posterior cortex that
+support this ability \cite{WangMarkramGoodmanEtAl06,HazyPauliHerdEtAlInPrep},
+and it is long-established that PFC neurons exhibit this active maintenance
+property
+\cite{FusterAlexander71,GoldmanRakic95,KubotaNiki71,MillerEricksonDesimone96,
+  MiyashitaChang88}.  This specialization for active maintenance is then
+consistent with the observed importance of the PFC in supporting cognitive
+flexibility (e.g., in task shifting, overcoming prepotent responding, and
+other similar such cases), and for providing top-down excitatory biasing over
+processing in the posterior cortex, to guide behavior in a task-relevant
+manner \cite{BraverCohen00,CohenDunbarMcClelland90,CohenServanSchrieber89,
+  HerdBanichOReilly06,MillerCohen01}.  All of these functions of the PFC can
+be summarized with the term {\em executive function}, and an important
+contribution of the Leabra approach is to show how all of these different
+aspects of executive function can derive from a single set of neural
+specializations.  This is an instance where the use of a big picture cognitive
+architecture provides an important and unique perspective, in contrast to
+developing specific models for different aspects of executive function, as is
+so common in the literature \cite{spec-ef-models}.
+
+The fundamental tradeoff between maintenance and updating make it clear
+however that the PFC cannot do all of this by itself --- some kind of dynamic
+gating system is required \cite{OReillyBraverCohen99}.  We and others have
+argued that the basal ganglia is ideally situated to provide a dynamic gating
+signal to the frontal cortex \cite[e.g., ]{FrankLoughryOReilly01}.  When the
+direct or {\em Go} pathway neurons fire, this (indirectly) triggers a burst of
+activation through the frontal-thalamic loop that results in a rapid updating
+of information in frontal cortex.  Otherwise (e.g., when the indirect or {\em
+  NoGo} pathway neurons fire), the frontal cortex can robustly maintain
+activity states over time.  But how does the basal ganglia know when to fire
+Go?  We have shown that the phasic dopamine signals associated with reward
+prediction errors can drive learning in the basal ganglia to solve this
+learning problem \cite{OReillyFrank06}.  Thus, capturing the overall
+contributions of the PFC to executive function requires a complex interactive
+system (Figure~\ref{fig.pbwm_architecture}), which we have implemented as the
+PBWM ({\em prefrontal cortex basal ganglia working memory}) system
+\cite{OReillyFrank06,HazyFrankOReilly06,HazyFrankOReilly07,
+  HazyPauliHerdEtAlInPrep}.
+
+We placed the basal ganglia in the center of the macrostructural architecture
+(Figure~\ref{fig.tripartite_model}) in part as a result of our collaboration
+with the ACT-R developers --- the central engine driving the sequencing of
+cognitive actions in ACT-R is the {\em production system} component of the
+architecture, which they have associated with the basal ganglia.
+Interestingly, this notion of a production system (which chooses the next ``cognitive action'' based on the current context) as the core of the
+cognitive architecture was central to Newell's original 20-questions paper
+\cite{Newell73}, and this idea does appear to have stood the test of time.
+ 
+% Behaviorally, people with severe basal ganglia dysfunction enter a
+% catatonic state, and are unable to endogenously generate a flow of
+% cognitive states or motor actions.  COMMENT: this is not really
+% correct and it's too complicated to explain. Striatal dysfunction
+% produces cataplexy (Parkinsonism), but loss of the output nuclei
+% (GPi/SNr/VP) doesn't and is actually fairly normal.
+
+Thus, the model of executive function that emerges from this picture is a
+continuous sequence of dynamic and highly selective gating actions exquisitely
+modulated by the basal ganglia, continually updating the states of selected
+regions of neurons in the frontal cortex. These in turn provide an updated
+context and top-down biasing on other cortical areas, including much of the
+posterior cortex, according to whatever goals or plans are currently
+activated.  Finally, at the brain-wide scale of the tripartite organization
+(Figure 4) is added the hippocampus which is constantly encoding and
+retrieving information cued by this ongoing flow, and thus providing relevant
+knowledge and context to inform ongoing processing.  There are also multiple
+mechanisms by which the PFC can provide more directed control over the
+encoding and retrieval processes in the hippocampus, to better deploy its
+considerable powers of learning and recall.
+
+One critical missing piece from this picture is the origin of these goal and
+plan representations: how does the system decide what it
+wants to do, and develop overall plans of action to accomplish its goals?  To
+understand more about this, we first provide an overarching picture about the
+organization of different representational content in the system.
+
+\subsection{What vs. How Content Specialization: Ventral vs. Dorsal Pathways}
+
+\begin{figure}
+
+  \centering\includegraphics[height=2in]{figs/fig_cortical_fun_org_tins_acc_ofc}
+  \caption{\small The What vs. How content organization of the brain.}
+  \label{fig.what_how}
+\end{figure}
+
+Complementing the parametric specializations described above, we can also try
+to identify content-based specializations in the cognitive architecture: ways
+in which different parts of the neocortex are organized to process specific
+kinds of information.  We begin with some motivating principles for thinking
+about why and how such a content-based organization might occur.  To
+contextualize the first principle, it seems that people have an irrepressible
+urge to anthropomorphize, and think of neurons as tiny people, communicating
+using some kind of language, like two old ladies sitting on a park bench
+discussing the passers-by.  For example, some researchers are engaged in a quest
+to discover the ``neural code'' --- a putative language that neurons use to
+communicate with, typically thought to involve complex sequences of spikes
+\cite[e.g., ]{RiekeWarlandDeRuyterVanSteveninckEtAl96}.  A consequence of this kind of thinking is that people
+tend to assume that it is no problem for neurons to rapidly change what they
+are encoding \cite[e.g.,]{Miller00,Duncan01} --- that neurons can just
+change the words that they send to the other neurons to effect this change.
+
+Contrary to the anthropomorphic image, neurons are fundamentally blind, with
+no direct access to the outside world, and wholly dependent on the synaptic
+inputs from other neurons.  Furthermore, each of these inputs acts like a
+raindrop in a bucket --- they all meld together into an aggregate ``net
+input,'' which then drives the neuron to fire, passing on another anonymous
+input to other neurons.  This places important constraints on the organization
+of information in the brain, as articulated in the following principles.
+
+{\bf Principle 17 (Meaning is in the activity pattern across neurons, not the individual neural messages):} {\em Meaning in a neural network is entirely derived from the patterns of activity across the population of input neurons (``receptive field'') and/or downstream targets (``projective field'') --- each individual neuron only has meaning in relationship to other neurons, and this meaning must be learned over time by each neuron.}
+
+Thus, we reject the notion of a neural code that posits meaning in individual
+neural signals, and accept the consequence that it is not possible for neurons
+to rapidly change what they encode --- that would just confuse the other
+neurons \cite{OReilly10}.  Instead, neural representations must be relatively
+stable over time, to enable a given receiving neuron to properly learn the
+statistics of the patterns of activity over its inputs.
+
+{\bf Principle 18 (Hierarchical stages required for complex processing):} {\em
+  Given the relatively simple detector-like functionality of individual
+  neurons, multiple hierarchically-organized stages of processing are
+  typically required to extract high-level information out of sensory input
+  streams.  Each stage of processing detects patterns of an incremental
+  increase in complexity relative the stage before, and this incremental
+  decomposition of the problem can enable information to be extracted in ways
+  that single stage transformations simply cannot support.}
+
+These two principles together imply that there should be a relatively stable
+structural organization of information in the brain, where nearby populations
+of neurons process similar kinds of information, so that they can present an
+informative overall pattern of activity to other downstream neurons in a
+hierarchically-organized processing pathway.  This conclusion converges with
+considerable empirical data on the nature of the pathways in the brain that
+process visual information in different ways.  Two major pathways have been
+identified, one progressing through successive layers of the ventral visual
+pathway into the inferotemporal cortex (IT), and the other progressing through
+the dorsal pathway into the parietal cortex.  The ventral pathway produces
+invariant representations of object identity over a succession of layers from
+V1, V2, V3, V4, aIT, to pIT.  Computational models of this pathway, including
+a Leabra model called LVis, have shown how this hierarchy is important
+for computing complex object feature detectors that are also invariant to many
+irrelevant sources of variance in input images, such as position, rotation,
+size, illumination, etc \cite{OReillyEtAlIP,FreedmanRiesenhuberPoggioEtAl01,FreedmanRiesenhuberPoggioEtAl01b,FreedmanRiesenhuberPoggioEtAl02,FreedmanRiesenhuberPoggioEtAl03,GiesePoggio03,GiesePoggio03b}.  Other models of
+the parietal cortex demonstrate hierarchies that transform retinotopic visual
+inputs into the proper reference frames for driving motor control
+\cite{PougetSejnowski97,PougetDeneveDuhamel02}.
+
+\incite{GoodaleMilner92,MilnerGoodale95,MilnerGoodale06} used other data, including striking dissociations in
+patients with brain damage, to argue for an overall {\em What} (ventral object
+recognition) vs. {\em How} (dorsal perception-for-action) division in
+posterior cortex, which is a refinement to the influential What vs. Where
+division suggested by \incite{UngerleiderMishkin82}.  This what vs. how
+distinction is very broad, encompassing many more specialized sub-pathways
+within these overall divisions, and other pathways of content-specific
+information exist as well, for example pathways for the other sensory
+modalities, and likely additional high-level semantic pathways, such as those
+involved in representing plots and story schemas.
+
+The principles above also suggest that it would make sense for the brain to
+carry these specialized content processing pathways forward into the
+prefrontal cortex, as we recently argued (\nopcite{OReilly10}; Figure~\ref{fig.what_how}).  This way, the prefrontal top-down control
+pathways can continue the hierarchical processing stages, resulting in even
+higher-level ``executive'' encodings of the different specialized pathways,
+which then provide a more effective basis for targeting top-down control.  For
+example, we have shown that the active maintenance properties of the PFC,
+along with the dynamic gating mechanism provided by the BG, shapes PFC
+representations to encode more abstract rules or regularities
+\cite{RougierNoelleBraverEtAl05}.  Under this what vs. how organization in PFC, the dorsal
+lateral PFC (DLPFC) is specialized for executive control over sensory-motor
+processing, including likely sequencing and organization of motor plans.  In
+contrast ventral lateral PFC (VLPFC) is more specialized for executive control
+over sensory processing that takes place in the IT cortex.  Within both of
+these areas, increasingly anterior PFC areas are likely to contain
+higher-order, more abstracted representations, because the hierarchical
+connectivity continues through this axis.  Overall, this organizational scheme
+is consistent with a wide range of data \cite{OReilly10}, and it helps to
+integrate findings across many different specific task paradigms, and
+constrain one's interpretation of the functional contributions of these areas
+--- exactly the kind of benefit a cognitive architecture should
+provide.
+
+One of the more intriguing aspects of this what vs. how organizational theory
+comes in its application to motivational and affective systems, which include
+the medial surface of the frontal cortex, as discussed next.
+
+\subsection{Motivational and Affective Systems}
+
+TODO: good fig of these systems from ACC/OFC on down..
+
+The last missing piece from our overall cognitive architecture comes in the
+form of motivational and affective systems, which are critical for driving the
+system toward certain goals, and regulating overall behavioral state and
+learning processes in response to different kinds of environmental feedback.
+It is these systems which help to establish the goals that the executive
+function system works to achieve.  Biologically, these systems are
+evolutionarily ancient, and there are many complex interacting systems that
+all seem at least partially redundant, making it extremely difficult to arrive
+at clear, compelling computational models.  We begin with a few principles
+that can help organize our thinking to some extent.
+
+{\bf Principle 19 (Interact and override):} {\em As newer brain areas evolved
+  on top of older ones, they generally have strong bidirectional interactive
+  connections with the older areas, and leverage the more robust signals from
+  the older areas to help train up the more flexible newer systems, while also
+  having the ability to exert top-down control over the older systems through
+  either directed or competitive inhibition \cite{MunakataHerdChathamEtAl11}.}
+
+{\bf Principle 20 (Motivation and reward must be grounded):} {\em As
+  higher-order motivational and affective areas evolved to be more flexible
+  and adaptive to the specific environmental context an individual finds
+  themself in, the risk of motivations becoming maladaptive over the course of
+  an individual's development emerged.  The prevalence of suicide in humans is
+  evidence that we have pushed this balance to the limit.  Thus, there must be
+  strong grounding constraints on the learning processes in these higher-order
+  motivational systems --- it is crucial that we cannot just make ourselves
+  happy by willing it to be so.}
+
+To explore the implications of these principles. we can start top-down in the
+evolutionary layer-cake of affective systems, beginning with the medial
+frontal areas that provide executive control over affective and motivational
+systems lower down.  As a general rule in brain anatomy, the medial brain
+areas are associated with the ``limbic system'', and are primarily involved in
+motivational and affective activation, learning, and control, and this is the
+case with the medial frontal areas.  As shown in Figure~\ref{fig.what_how},
+the dorsal medial frontal cortex contains the anterior cingulate cortex (ACC),
+while the ventral medial frontal areas (spreading over into ventral lateral)
+include the orbital frontal cortex (OFC), and there are also non-OFC areas
+generically labeled ventral medial PFC (VMPFC).  According to the what vs. how
+dorsal/ventral distinction, we would expect the ACC to be important for
+motivational and affective control associated with motor control, while the
+OFC should be involved in motivational and affective control associated with
+objects, language, and other ventral pathway information.
+
+Matthew Rushworth and colleagues have accumulated considerable data consistent
+with this What vs. How account, showing that ACC encodes ``value''
+representations associated with different motor actions that an animal is
+considering, while OFC encodes more stimulus-driven value representations.
+This division is also consistent with considerable data showing that the ACC
+is important for encoding error, conflict (uncertainty), and effort
+information --- these are the affective states most relevant for evaluating
+different action choices.  In contrast, OFC neurons have been shown to encode
+both unconditioned stimulus (US --- i.e., reward outcome) information, along
+with conditioned stimuli (CS) that have been associated with these US's.
+Thus, it appears that the broad what vs. how dissociation can also help make
+sense of the medial frontal cortical organization.
+
+Moving down a level in the hierarchy, the equivalent of posterior cortex in
+the affective domain is the basolateral amygdala (BLA), which is anatomically
+at the same level as the hippocampus in what is known as the ``archicortex'' or
+ancient cortex.  The BLA is densely interconnected with the OFC and the ACC,
+and it is known to encode both US's and CS's.  Some models of the BLA and OFC
+interactions suggest that the BLA helps train corresponding representations in
+the OFC, while OFC provides top-down biasing over BLA, resulting in enhanced
+flexibility during reversal learning for example \cite{FrankClaus06,PauliHazyOReilly12}.  This dynamic is consistent with the
+principles outlined above.  The BLA also interacts with a deeper structure
+known as the central nucleus of the amygdala (CNA), which then has extensive
+connectivity with ancient midbrain nuclei involved in all manner of basic
+bodily functions and states of arousal, pain, pleasure, etc.
+
+One pathway through the CNA is involved in driving phasic dopmaine bursts in
+response to CS's, which forms a central part of the {\em Learned Value (LV)}
+system in our PVLV model ({\em Primary Value, Learned Value})
+\cite{OReillyFrankHazyEtAl07,HazyFrankOReilly10}.  This PVLV system explains how different
+brain areas contribute to the overall phenomenon of reward prediction error
+(RPE) signaling in the midbrain dopamine neurons, which then broadcast the
+neuromodulator dopamine throughout the brain.  Dopamine has many effects on
+neurons in different brain areas, but rapid phasic changes in dopamine are
+highly likely to affect learning in the striatum of the basal ganglia, in a
+manner consistent with its gating role in the PBWM model as described earlier
+\cite{Frank05}.  Contrary to the popular impression, dopamine itself is
+unlikely to convey an affective pleasure signal throughout the brain, 
+% Need ref to hedonic hypothesis disproval- the below is actually a big part of what makes people happy (achievement doesn't directly generate happiness), so doesn't argue against!
+% because
+% it encodes errors in reward predictions, not reward values themselves, 
+and should be thought of more as a learning or salience signal.
+
+To summarize, the Leabra architecture at this point has a strong
+implementation of the dopaminergic system and its involvement in learning, and
+some initial implementations of the BLA / OFC system
+\cite{PauliHazyOReilly12}.  We are currently elaborating and refining these
+models, and developing an ACC model, to provide a more complete motivational
+and affective system.  Interestingly, one of the most important functions we
+attribute to the ACC and OFC is an ability to track the rate of progress
+toward a goal, and to trigger the adoption of new strategies when the system
+becomes ``frustrated'' with its current progress.  This system would account
+for similar functionality that was the cornerstone of Allen Newell's SOAR
+architecture, which had a universal subgoaling system that activated whenever
+the production system reached an impasse, and couldn't find a way forward.  We
+also think that the motivational system will play a critical role in selecting
+goals and action plans that are within the current ``zone of proximal
+development'' of the system, corresponding in effect to a state of
+``curiosity'' about things which the system would like to explore further.
+Given our current experience with the PBWM system lacking these motivational
+control systems, we are convinced that they are essential for enabling the
+system to be more robust and effective in solving problems.  For example, the
+current system will continue to select actions that lead on average to
+suboptimal rewards, without properly exploring other options, despite the fact
+that it is making no progress overall in achieving greater levels of success.
+The network needs to experience some frustration for what it's currently
+doing, and curiosity for underexplored avenues.
+
+Finally, coming back to principle \#20, we follow Michael Tomasello in believing that much of the flexibility and power of human cognition comes from our strong social motivational systems \cite{Tomasello01}.  If you try to
+understand human motivations in terms of satisfying a desire for basic
+survival factors such as food and water, or even money, it doesn't really add
+up.  There is no way someone would be a starving artist or a grad student
+under such a scenario.  However, once you think in terms of social motivation,
+it all starts to make sense.  We basically want to both share knowledge and
+experiences with others, and also show off for others.  Furthermore, we have a
+strong in-group / out-group motivational dichotomy in our heads, which
+essentially aligns with the love / hate axis.  And these groups can be high
+dimensional, encompassing everything from family, friends, school, sports
+teams, political party, nation, and species.  These social motivations provide
+grounded primary reward signals, but are also highly flexible on a cultural
+level, enabling people as a group to adapt to different demands.  There is
+much that remains to be understood in this area, but we believe that it is
+important for any accurate model of human cognition to take these social
+factors into account.
+
+\section{Discussion}
+
+We hope that the explicit enumeration of a set of core principles underlying
+the Leabra cognitive architecture provides a clear sense of the motivations,
+priorities, and defining features of the architecture.  As noted earlier, we
+refer the reader to our online textbook \verb\http://ccnbook.colorado.edu\ 
+\cite{OReillyMunakataFrankEtAl12} for a more complete development of these
+ideas, and their specific implementation in computational models.
+
+You may have some lingering questions about the precise relationship between
+the principles articulated here, the more specific theoretical instantiation
+of the Leabra architecture as reflected in specific models and papers, and the
+detailed implementation of Leabra in the current version of the simulation
+software.  Which is the official definition of the architecture?  What happens
+when the architecture changes over time --- does that invalidate earlier
+models?  Can anyone contribute to the development of the architecture?  Is
+Leabra just a label for an ever-expanding theory of human cognition, or do the
+existing principles set clear limits on how it might expand in the future?
+
+As is implicit in the principles enumerated above, there is not one privileged
+level of description, and hence we seek convergent multi-level descriptions of
+the nature of the Leabra architecture as well --- it is simultaneously and at
+different levels all of the above three things,
+
+TODO: what three things?  
+
+each of which mutually informs and constrains the others.  Thus, principles
+shape the overall structure of the architecture, while specific models and
+theories about particular brain areas or cognitive functions test the
+applicability of the principles, and provide new insights that can be
+incorporated back into the overall architecture.  Many times important
+questions are raised in the process of the software implementation, and
+computational results strongly inform us about what works and what does not
+work to actually solve particular problems.  And, similarly, important
+questions and solutions are discovered in the process of tyring to understand
+the actual biological mechanisms. Thus, in many ways, the architecture
+represents a kind of aggregation and clearinghouse for integrating new
+advances into a coherent and competent framework.
+
+Clearly, Leabra is a work in progress, with many important challenges ahead,
+and we welcome contributions from anyone --- as should be evident, we gladly
+steal the best ideas wherever we can find them (giving proper attribution of
+course).  We do think that the existing set of principles, theories, and
+software provide a solid foundation upon which to build --- one that will
+strongly inform and constrain future progress.
+
+% * TODO: compare/contrast with ACT-R: same arch, but some diffs:
+% * hippo, pfc vs. declarative memory, buffers, etc..
+
+% In so doing, it addresses many of the significant problems that have
+% led to a decrease in the popularity of backpropagation cognitive
+% models, which have been strongly questioned on the grounds of
+% biological plausibility \cite{bpbioplaus}, and catastrophic
+% interference \cite{catinf}.  This latter issue is resolved within
+% the Leabra architecture by incorporating a functional division of
+% labor between cortical and hippocampal learning systems \cite{CLS}.
+
+\bibliography{ccnlab}
+
+\end{document}

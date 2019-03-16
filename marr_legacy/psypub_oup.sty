@@ -1,0 +1,587 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% RCS Info
+% $Author: monheit $
+% $Date: 92/04/04 22:17:36 $
+% $Revision: 1.4 $
+% $Source: /u1/monheit/latex/psych/dev/newpub/RCS/psypub.sty,v $
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{Document Style Option 'psypub, v0.9', SU Psychology Dept}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% psypub.sty
+%%      Stanford Psychology APA style
+%%      Modifications to Latex article style
+%%
+%%      3/31/92 
+%%      This is the new version of psychpub.sty which implements
+%%      several improvements and bug fixes. 
+%%     
+%%      Use this style for SUBMISSIONS to journals requiring APA
+%%      format.   If you want APA format, but want figures, tables,
+%%      and footnotes all integrated into your text, use the
+%%      psypap.sty option.  
+%%
+%%
+%%      This style makes several important changes to LaTeX's article 
+%%      style.  It is meant to be used as an optional style as follows:
+%%              \documentstyle[psypap]{article}
+%%
+%%      You may use psypap in conjunction with most other style
+%%      options.  E.g., [11pt,times,psypap].
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% doublespacing
+%%      APA style submissions should be doublespaced.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand{\baselinestretch}{1.8}
+%% from doublespace.sty
+%% Single spacing should not be necessary for APA submissions,
+%% but it's here if needed.
+\def\singlespace{\def\baselinestretch{1}\@normalsize}
+\def\endsinglespace{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Headers and Footers
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Based on fancyheadings.sty
+% We have eliminated head and foot rules, but maintained most
+% of the functionality.  Even though only right heads are used
+% in APA format, I've left the other head and foot commands
+% available, since they are nice to have for drafts. -MAM
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% From original fancyheadings file:
+% fancyheadings.sty version 1.0
+% Fancy headers and footers.
+% Piet van Oostrum, Dept of Computer Science, University of Utrecht
+% Padualaan 14, P.O. Box 80.089, 3508 TB Utrecht, The Netherlands
+% Telephone: +31-30-531806. piet@cs.ruu.nl (mcvax!hp4nl!ruuinf!piet)
+% March, 1989.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\lhead{\@ifnextchar[{\@xlhead}{\@ylhead}}
+\def\@xlhead[#1]#2{\gdef\@elhead{#1}\gdef\@olhead{#2}}
+\def\@ylhead#1{\gdef\@elhead{#1}\gdef\@olhead{#1}}
+
+\def\chead{\@ifnextchar[{\@xchead}{\@ychead}}
+\def\@xchead[#1]#2{\gdef\@echead{#1}\gdef\@ochead{#2}}
+\def\@ychead#1{\gdef\@echead{#1}\gdef\@ochead{#1}}
+
+\def\rhead{\@ifnextchar[{\@xrhead}{\@yrhead}}
+\def\@xrhead[#1]#2{\gdef\@erhead{#1}\gdef\@orhead{#2}}
+\def\@yrhead#1{\gdef\@erhead{#1}\gdef\@orhead{#1}}
+
+\def\lfoot{\@ifnextchar[{\@xlfoot}{\@ylfoot}}
+\def\@xlfoot[#1]#2{\gdef\@elfoot{#1}\gdef\@olfoot{#2}}
+\def\@ylfoot#1{\gdef\@elfoot{#1}\gdef\@olfoot{#1}}
+
+\def\cfoot{\@ifnextchar[{\@xcfoot}{\@ycfoot}}
+\def\@xcfoot[#1]#2{\gdef\@ecfoot{#1}\gdef\@ocfoot{#2}}
+\def\@ycfoot#1{\gdef\@ecfoot{#1}\gdef\@ocfoot{#1}}
+
+\def\rfoot{\@ifnextchar[{\@xrfoot}{\@yrfoot}}
+\def\@xrfoot[#1]#2{\gdef\@erfoot{#1}\gdef\@orfoot{#2}}
+\def\@yrfoot#1{\gdef\@erfoot{#1}\gdef\@orfoot{#1}}
+
+\newdimen\headrulewidth
+\newdimen\footrulewidth
+\newdimen\plainheadrulewidth
+\newdimen\plainfootrulewidth
+\newdimen\headwidth
+\newif\if@fancyplain \@fancyplainfalse
+\def\fancyplain#1#2{\if@fancyplain#1\else#2\fi}
+
+% Initialization of the head and foot text.
+
+%% MAM: removed headrule and footrule so these have
+%% no effect in the current style, but setting their
+%% sizes won't hurt anything.
+\headrulewidth\z@
+\footrulewidth\z@
+\plainheadrulewidth\z@
+\plainfootrulewidth\z@
+
+%% MAM: default headers
+\rhead{\singlespace \@runninghead \ \\ \rm\thepage}
+\lhead{}
+\chead{}
+\lfoot{}
+\cfoot{}
+\rfoot{}
+
+% Put together a header or footer given the left, center and
+% right text, fillers at left and right and a rule.
+% The \lap commands put the text into an hbox of zero size,
+% so overlapping text does not generate an errormessage.
+
+\def\@fancyhead#1#2#3#4#5{#1\hbox to\headwidth{\vbox{\hbox
+{\rlap{\parbox[b]{\headwidth}{\raggedright#2\strut}}\hfill
+\parbox[b]{\headwidth}{\centering#3\strut}\hfill
+\llap{\parbox[b]{\headwidth}{\raggedleft#4\strut}}}}}#5}
+
+\def\@fancyfoot#1#2#3#4#5{#1\hbox to\headwidth{\vbox{%
+\hbox{\rlap{\parbox[t]{\headwidth}{\raggedright#2\strut}}\hfill
+\parbox[t]{\headwidth}{\centering#3\strut}\hfill
+\llap{\parbox[t]{\headwidth}{\raggedleft#4\strut}}}}}#5}
+
+\def\ps@fancy{
+\let\@mkboth\markboth
+\@ifundefined{chapter}{\def\sectionmark##1{\markboth
+{\uppercase{\ifnum \c@secnumdepth>\z@
+ \thesection\hskip 1em\relax \fi ##1}}{}}
+\def\subsectionmark##1{\markright {\ifnum \c@secnumdepth >\@ne
+ \thesubsection\hskip 1em\relax \fi ##1}}}
+{\def\chaptermark##1{\markboth {\uppercase{\ifnum \c@secnumdepth>\m@ne
+ \@chapapp\ \thechapter. \ \fi ##1}}{}}
+\def\sectionmark##1{\markright{\uppercase{\ifnum \c@secnumdepth >\z@
+ \thesection. \ \fi ##1}}}}
+\def\@oddhead{\@fancyhead\relax\@olhead\@ochead\@orhead\hss}
+\def\@oddfoot{\@fancyfoot\relax\@olfoot\@ocfoot\@orfoot\hss}
+\def\@evenhead{\@fancyhead\hss\@elhead\@echead\@erhead\relax}
+\def\@evenfoot{\@fancyfoot\hss\@elfoot\@ecfoot\@erfoot\relax}
+\headwidth\textwidth}
+\def\ps@fancyplain{\ps@fancy \let\ps@plain\ps@plain@fancy}
+\def\ps@plain@fancy{\@fancyplaintrue\ps@fancy}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Title Page
+%%    Redesigned and added the command: \runninghead.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\@runninghead{\relax}
+\def\@upperrunhead{\relax}
+\def\runninghead#1{\gdef\@runninghead{#1}
+                   \gdef\@upperrunhead{\uppercase{#1}}}
+
+\def\maketitle{%
+ \onecolumn\newpage
+ \setcounter{page}{1}
+ \null
+ \vfil
+ \vskip 60pt                   % To adjust centering.
+ \begin{center}
+   {\large \@title \par}       % Set title in \large size.
+   \vskip 4em                  % Vertical space after title.
+   {\large                     % Set author in \large size.
+     \lineskip .75em
+     \begin{tabular}[t]{c}\@author 
+     \end{tabular}\par}      
+   \vskip 30.0ex               % Vertical space after author.
+   {\normalsize Running Head:\space\@upperrunhead\par}
+ \end{center} \par
+ \vfil
+ \null
+ \setcounter{footnote}{0}       % Footnotes start at zero again.
+ \let\thanks\relax
+ \gdef\@thanks{}\gdef\@author{}\gdef\@title{}
+ \let\maketitle\relax}   
+
+\def\abstract{\clearpage\section{Abstract}}
+\def\endabstract{\par\vfil\null\clearpage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Section headings
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% The default is to handle 3 levels of sectioning.  APA heading styles
+% change slightly depending on whether 3 or 4 levels of headings are
+% used in a paper.  To use 4 levels of headings, specify psy4lev as a
+% \documentstyle option before psypap.
+
+% APA Level 2
+% change Section heading to large, centered
+\renewcommand{\section}{\@startsection {section}{1}{\z@}{3.5ex plus
+1ex minus .2ex}{2.3ex plus .2ex}{\large\bf}*}
+
+% APA Level 4
+% change Subsection heading to large, italic, flushleft
+\renewcommand{\subsection}{\@startsection{subsection}{2}{\z@}{3.25ex
+plus 1ex minus .2ex}{1.5ex plus .2ex}{\large\it}*}
+
+% APA Level 5
+% change Subsubsection to normalsize, italic, run-in
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{\parindent
+}{-3.25ex plus -1ex minus -.2ex}{-1.0em}{\it}*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Figures and Tables
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% The following is based on endfloat.sty.  A number of changes have been
+% made to make things more consistent with APA style.  We also modified
+% the list of figures commands to produce an APA list of captions.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Header from original endfloat.sty
+% Name: endfloat.sty  
+% Description: LaTeX style to put figures and tables at end of article
+% Keywords: LaTeX, style-option, float, figure, table
+% Author: James Darrell McCauley <jdm5548@diamond.tamu.edu>
+% Latest Version: <25 Feb 1992> Version 0.1 (See CHANGE LOG below)
+% Archives: none yet.
+% Note: This is a hack.
+% See also: comment.sty, endnotes.sty
+%
+\newif\if@domarkers
+\def\markersintext{
+        \@domarkerstrue
+}
+\def\nomarkersintext{
+        \@domarkersfalse
+}
+\markersintext  % changed default
+
+\newcounter{postfig}
+\newwrite\@postfigs
+\newif\if@postfigsopen \global\@postfigsopenfalse
+ \def\@openpostfigs{\immediate\openout\@postfigs=\jobname.fff\relax
+      \message{(\jobname.fff)}
+      \global\@postfigsopentrue}
+
+\newcounter{posttbl}
+\newwrite\@posttbls
+\newif\if@posttblsopen \global\@posttblsopenfalse
+ 
+\def\@openposttbls{\immediate\openout\@posttbls=\jobname.ttt\relax
+      \message{(\jobname.fff)}
+      \global\@posttblsopentrue}
+
+\def\makeinnocent#1{\catcode`#1=12 }
+
+\def\comment{\if@postfigsopen \else \@openpostfigs \fi
+    \immediate\write\@postfigs{\string\begin{figure}}
+    \if@domarkers
+       \par\addtocounter{postfig}{1}
+       \hbox to \textwidth{\hfill\hbox{\parindent=0em
+         \vtop spread 0.2in{\hrule\vfil
+           \hbox{\hfill Insert Figure~\thepostfig\ about here.\hfill}
+           \vfil\hrule}}\hfill}
+    \par\vspace{\baselineskip}
+    \fi
+    \def\@currenvir{comment}
+    \begingroup
+    \let\do\makeinnocent \dospecials
+    \makeinnocent\^^L % and whatever other special cases
+    \endlinechar`\^^M \catcode`\^^M=12 \xcomment}
+{\catcode`\^^M=12 \endlinechar=-1 %
+ \gdef\xcomment#1^^M{\def\test{#1}
+      \ifx\test\endcommenttest
+          \def\next{\endgroup\end{comment}
+          \immediate\write\@postfigs{\string\end{figure}}
+          \immediate\write\@postfigs{\string\clearpage}
+          \immediate\write\@postfigs{ }}
+      \else\ifx\test\enddblcommenttest
+          \def\next{\endgroup\end{comment}
+          \immediate\write\@postfigs{\string\end{figure}}
+          \immediate\write\@postfigs{\string\clearpage}
+          \immediate\write\@postfigs{ }}
+      \else
+          \if@postfigsopen \else \@openpostfigs \fi
+          \immediate\write\@postfigs{#1}%
+          \let\next\xcomment
+      \fi \fi \next}
+}
+
+{\escapechar=-1
+ \xdef\endcommenttest{\string\\end\string\{figure\string\}}
+ \xdef\enddblcommenttest{\string\\end\string\{figure*\string\}}
+}
+
+\def\komment{\if@posttblsopen \else \@openposttbls \fi
+    \immediate\write\@posttbls{\string\begin{table}}
+    \if@domarkers
+       \par %\vspace{\baselineskip}
+       \addtocounter{posttbl}{1}
+       \hbox to \textwidth{\hfill\hbox{\parindent=0em
+         \vtop spread 0.2in{\hrule\vfil
+           \hbox{\hfill Insert Table~\theposttbl\ about here.\hfill}
+           \vfil\hrule}}\hfill}
+       \par\vspace{\baselineskip}
+    \fi
+    \def\@currenvir{komment}
+    \begingroup
+    \let\do\makeinnocent \dospecials
+    \makeinnocent\^^L % and whatever other special cases
+    \endlinechar`\^^M \catcode`\^^M=12 \xkomment}
+{\catcode`\^^M=12 \endlinechar=-1 %
+ \gdef\xkomment#1^^M{\def\test{#1}
+      \ifx\test\enddblkommenttest
+          \def\next{\endgroup\end{komment}
+          \immediate\write\@posttbls{\string\end{table}}
+          \immediate\write\@posttbls{\string\clearpage}
+          \immediate\write\@posttbls{ }}
+      \else\ifx\test\endkommenttest
+          \def\next{\endgroup\end{komment}
+          \immediate\write\@posttbls{\string\end{table}}
+          \immediate\write\@posttbls{\string\clearpage}
+          \immediate\write\@posttbls{ }}
+      \else
+          \if@posttblsopen \else \@openposttbls \fi
+          \immediate\write\@posttbls{#1}%
+          \let\next\xkomment
+      \fi \fi \next}
+}
+
+{\escapechar=-1
+ \xdef\enddblkommenttest{\string\\end\string\{table*\string\}}
+ \xdef\endkommenttest{\string\\end\string\{table\string\}}
+}
+%% end of stuff from comment.sty
+
+\let\figure=\comment
+\let\table=\komment
+\@namedef{figure*}{\comment}
+\@namedef{table*}{\komment}
+%\def\figure{\comment}
+\def\endfloat{\endcomment}
+
+%% MAM: Modified these so that they don't produce anything if
+%% there are no floats of the appropriate type.
+
+\def\processfigures{\if@postfigsopen
+  \listoffigures\clearpage\pagestyle{empty}
+  \immediate\closeout\@postfigs \global\@postfigsopenfalse
+  \let\figure={\@float{figure}}
+  \let\endfigure=\end@float
+  \clearpage
+  %%\section*{Figures\@mkboth{FIGURES}{FIGURES}}
+  \@input{\jobname.fff}
+  \fi}
+
+\def\processtables{\if@posttblsopen
+  \immediate\closeout\@posttbls \global\@posttblsopenfalse
+  \let\table={\@float{table}}
+  \let\endtable=\end@float
+  \clearpage%%\section*{Tables\@mkboth{TABLES}{TABLES}}
+  \@input{\jobname.ttt}
+  \fi}
+
+%% End of stuff from endfloats.sty
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Caption Handling
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Must handle captions differently for figs and tables.  Table
+%% captions stay with the table, figure captions get generated on a
+%% separate page by giving a \listoftables command.
+\long\def\@caption#1[#2]#3{\par\addcontentsline{\csname
+  ext@#1\endcsname}{#1}{%
+ {\it Figure \csname the#1\endcsname.}{\space\ignorespaces #2}}
+ \gdef\fgettype{\csname ftype@#1\endcsname}
+ \ifnum \fgettype=\ftype@table                   %% only print the caption
+  \begingroup                                    %% if it's a table,
+    \@parboxrestore                              %% not figure.
+    \normalsize
+    \@makecaption{\csname fnum@#1\endcsname}{\ignorespaces #3}\par
+  \endgroup
+ \fi
+}
+
+%% Modified from article.sty to put extra vertical space after the
+%% the caption.  This is only called for tables.
+% \@makecaption{NUMBER}{TEXT} : Macro to make a figure or table caption.  
+%      NUMBER : Figure or table number--e.g., 'Figure 3.2' 
+%      TEXT   : The caption text.
+%  Macro should be called inside a \parbox of right width, with \normalsize.
+
+\long\def\@makecaption#1#2{
+   \vskip 10pt 
+   \setbox\@tempboxa\hbox{#1: #2}
+   \ifdim \wd\@tempboxa >\hsize   % IF longer than one line:
+       \unhbox\@tempboxa\par      %   THEN set as ordinary paragraph.
+     \else                        %   ELSE  center.
+       \hbox to\hsize{\hfil\box\@tempboxa\hfil}  
+   \fi\par\vskip\baselineskip}
+
+\def\listoffigures{\clearpage\section{Figure
+Captions}\@starttoc{lof}} 
+
+%% Entry for figure captions.
+\def\l@figure#1#2{\addpenalty{\@secpenalty}
+   \addvspace{2.25em plus 1pt}  % space above part line
+   \begingroup
+     \parindent \z@ 
+     {
+     \leavevmode          % TeX command to enter horizontal mode.       
+     #1}\par
+   \endgroup}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Bibliography
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% SDM, 26-Aug-89, got rid of parens in @cite
+% mam, 29-aug-90, removed parindent and markboth for headings.
+
+\def\@cite#1#2{#1\if@tempswa , #2\fi}
+\def\@biblabel#1{}
+
+\newlength{\bibhang}
+\setlength{\bibhang}{2em}
+
+\def\thebibliography#1{\newpage
+  \section{References}\list
+  {\relax}{\setlength{\labelsep}{0em}
+        \setlength{\itemindent}{-\bibhang}
+        \setlength{\leftmargin}{\bibhang}}
+    \def\newblock{\hskip .11em plus .33em minus .07em}
+    \sloppy\clubpenalty4000\widowpenalty4000
+    \sfcode`\.=1000\relax}
+
+%% Modify \section at end of bibliography so that each section
+%% after the bib starts on its own page.
+\def\endthebibliography{\endlist\par
+  \global\def\section{\@startsection {section}{1}{\z@}{3.5ex plus
+  1ex minus .2ex}{2.3ex plus .2ex}{\clearpage\large\centering}*}}
+
+\def\@citex[#1]#2{\if@filesw\immediate\write\@auxout{\string\citation{#2}}\fi
+  \def\@citea{}\@cite{\@for\@citeb:=#2\do
+    {\@citea\def\@citea{; }\@ifundefined
+       {b@\@citeb}{{\bf ?}\@warning
+       {Citation `\@citeb' on page \thepage \space undefined}}%
+{\csname b@\@citeb\endcsname}}}{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% End Document
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% MAM: Modified this to produce ending sections in the right order
+%% for APA style.  Partially derived from endfloat.sty
+\def\enddocument{\onecolumn
+  \produceauthornote
+  \producenotes
+  \processtables
+  \processfigures
+  \@checkend{document}\clearpage\begingroup  
+  \if@filesw \immediate\closeout\@mainaux 
+    \def\global\@namedef##1##2{}%
+    \def\newlabel{\@testdef r}%
+    \def\bibcite{\@testdef b}\@tempswafalse%
+    \makeatletter\input \jobname.aux
+%     \if@tempswa \@warning{Label(s) may have changed.  Rerun to get
+%   cross-references right}\fi
+  \fi
+  \endgroup\deadcycles\z@\@@end}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Author Notes
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This is derived from endnote.sty.  As currently implemented, the
+% \authornote command can be issued anywhere between the
+% \begin{document} and \end{document}.  It's argument is the text of
+% the author notes and can be multiple paragraphs.  The text will
+% appear on an Author Note page at the end of the manuscript in the
+% position designated by APA style.
+% 
+% This command is NOT a standard LaTeX command so it will probably not
+% work in other styles.  An alternative way to produce author notes is
+% to make them a new section following any appendices.  After the
+% bibliography, \section is redefined to start a new page, so
+% \section{Author Notes} works.
+%
+% A better future solution may be to let the \thanks
+% command produce author notes, but there are some problems with this.
+
+\newbox\authornotebox
+
+\long\def\authornote#1{\normalsize\let\@sf\empty
+  \ifhmode\edef\@sf{\spacefactor\the\spacefactor}\/\fi
+  \@sf\vauthornote{{#1}}}
+
+\long\def\vauthornote#1{\global\setbox\authornotebox=
+  \vbox{\parindent=10pt\unvbox\authornotebox\bgroup
+  #1\ignorespaces\strut\egroup}}
+
+\def\produceauthornote{\ifvoid\authornotebox\else
+  \clearpage\section{Author Notes}\vspace*{0.5in}%
+  \unvbox\authornotebox\par\fi}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% End Notes
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Based on ?endnotes.sty (Author unknown, ftp'd from sun.soe.clarkson.edu).
+%  Redefines footnote to gather up notes and put them all on an
+%  end note page as per APA style.
+%
+% Use \endnote{1}{text}. At the end of your document, type
+% \producenotes to actually flush all end notes to be printed.
+%
+
+\newbox\endnotebox
+\def\setendnotefont#1{\gdef\endnotefont{#1}}
+
+%% Don't need to change font, in fact, shouldn't change font.
+\setendnotefont{}            
+
+\long\def\endnote#1{\let\@sf\empty
+  \ifhmode\edef\@sf{\spacefactor\the\spacefactor}\/\fi
+  #1\@sf\vendnote{{#1}}}
+
+%% removed the llap so that note number was not set in a vbox 
+%% 1 1/2 lines above the endnote!!  Also, reduced the amt of
+%% parindent to something smaller, as suggested in APA manual.
+\long\def\vendnote#1{\global\setbox\endnotebox=
+   \vbox{\parindent=10pt\endnotefont\unvbox\endnotebox\bgroup
+   #1\ignorespaces\futurelet\next\aftergroup\no@te\relax}}
+
+\long\def\no@te{\ifcat\bgroup\noexpand\next \let\next\n@@te
+  \else\let\next\n@t\fi \next}
+\long\def\n@@te{\bgroup\aftergroup\@endnote\let\next}
+\long\def\n@t#1{#1\@endnote}
+\long\def\@endnote{\strut\egroup}
+%
+\newcount\enotecounter
+\def\resetenotecount{\global\enotecounter=0 } \resetenotecount
+\def\setenotecount#1{\global\enotecounter=#1 }
+
+%% Again, removed the font.  It will be set in math mode anyway.
+%% Also, superscripting didn't seem to work, so, we pass the numeral
+%% to endnotes already superscripted.  But, don't otherwise change the
+%% code. See suapapub.sty for how this is done.
+\def\setendnoteflagfont#1{\gdef\endnoteflagfont{#1}}
+\setendnoteflagfont{}       %%no font here.
+
+\def\producenotes{\ifnum\thefnen > 0 %
+  \clearpage\section{Footnotes}\vskip\baselineskip%
+  \ifvoid\endnotebox\else\unvbox\endnotebox\par\fi
+  \fi}
+
+%% MAM: Modifications to redefine footnote.
+\newcounter{fnen}
+
+%% MAM 2-6-92
+%% modified to put a linefeed after the footnote so extra
+%% space is left between endnotes.
+\long\def\footnote#1{\addtocounter{fnen}{1}%
+  \endnote{$^{\thefnen}$}{\protect{#1\par}}} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Penalties
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clubpenalty 10000
+\widowpenalty 10000
+\hyphenpenalty 10000  % No hyphenation permitted.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Lengths, Spaces, etc.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\raggedright                    % this must be before margins, etc.
+
+\oddsidemargin 0pt
+\evensidemargin 0pt
+\headheight 12pt
+\headsep .5in
+\topmargin -.75in
+%\footheight .25in
+\footskip .75in
+\textheight 9in
+\textwidth 6.5in
+\parskip 10pt
+\parindent 3.5em
+
+% Don't do this until after margins are set or the headers won't be
+% placed correctly.
+\ps@fancy
+
+\endinput
+
+
+
+
+

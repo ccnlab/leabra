@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+  xmlns="http://www.w3.org/2000/svg" version="1.1"
+  width="400px"
+  height="400px"
+  viewBox="0 0 1000.0 1000.0">
+<path stroke="#000000" stroke-width="2" fill="none"
+  d="M 73.7,777.3 L 73.7,157.6 L 1003.3,157.6 L 1003.3,777.3 L 73.7,777.3 "
+ />
+
+<g>
+
+<text x="538.5" y="870.3" font-family="Arial" font-size="37.6" fill="#000000" text-anchor="middle">
+gp 5 group
+</text>
+
+<text x="151.2" y="836.2" font-family="Arial" font-size="37.6" fill="#000000" text-anchor="middle">
+D
+</text>
+
+<text x="228.7" y="836.2" font-family="Arial" font-size="37.6" fill="#000000" text-anchor="middle">
+E
+</text>
+
+<text x="306.1" y="836.2" font-family="Arial" font-size="37.6" fill="#000000" text-anchor="middle">
+F
+</text>
+
+<text x="461.1" y="836.2" font-family="Arial" font-size="37.6" fill="#000000" text-anchor="middle">
+D
+</text>
+
+<text x="538.5" y="836.2" font-family="Arial" font-size="37.6" fill="#000000" text-anchor="middle">
+E
+</text>
+
+<text x="616.0" y="836.2" font-family="Arial" font-size="37.6" fill="#000000" text-anchor="middle">
+F
+</text>
+
+<text x="770.9" y="836.2" font-family="Arial" font-size="37.6" fill="#000000" text-anchor="middle">
+D
+</text>
+
+<text x="848.4" y="836.2" font-family="Arial" font-size="37.6" fill="#000000" text-anchor="middle">
+E
+</text>
+
+<text x="925.9" y="836.2" font-family="Arial" font-size="37.6" fill="#000000" text-anchor="middle">
+F
+</text>
+<path stroke="#000000" stroke-width="2" fill="none"
+  d="M 73.7,777.3 L 1003.3,777.3 M 73.7,792.8 L 73.7,761.8 M 151.2,792.8 L 151.2,761.8 M 228.7,792.8 L 228.7,761.8 M 306.1,792.8 L 306.1,761.8 M 383.6,792.8 L 383.6,761.8 M 461.1,792.8 L 461.1,761.8 M 538.5,792.8 L 538.5,761.8 M 616.0,792.8 L 616.0,761.8 M 693.5,792.8 L 693.5,761.8 M 770.9,792.8 L 770.9,761.8 M 848.4,792.8 L 848.4,761.8 M 925.9,792.8 L 925.9,761.8 M 1003.3,792.8 L 1003.3,761.8 "
+ />
+<path stroke="#000000" stroke-width="2" fill="none"
+  d="M 73.7,157.6 L 1003.3,157.6 M 73.7,173.1 L 73.7,142.1 M 151.2,173.1 L 151.2,142.1 M 228.7,173.1 L 228.7,142.1 M 306.1,173.1 L 306.1,142.1 M 383.6,173.1 L 383.6,142.1 M 461.1,173.1 L 461.1,142.1 M 538.5,173.1 L 538.5,142.1 M 616.0,173.1 L 616.0,142.1 M 693.5,173.1 L 693.5,142.1 M 770.9,173.1 L 770.9,142.1 M 848.4,173.1 L 848.4,142.1 M 925.9,173.1 L 925.9,142.1 M 1003.3,173.1 L 1003.3,142.1 "
+ />
+
+<text x="-11.8" y="467.5" font-family="Arial" font-size="37.6" fill="#000000" writing-mode="tb" text-anchor="middle">
+people
+</text>
+
+<text x="52.0" y="792.2" font-family="Arial" font-size="37.6" fill="#000000" text-anchor="end">
+0
+</text>
+
+<text x="52.0" y="730.2" font-family="Arial" font-size="37.6" fill="#000000" text-anchor="end">
+1
+</text>
+
+<text x="52.0" y="668.3" font-family="Arial" font-size="37.6" fill="#000000" text-anchor="end">
+2
+</text>
+
+<text x="52.0" y="606.3" font-family="Arial" font-size="37.6" fill="#000000" text-anchor="end">
+3
+</text>
+
+<text x="52.0" y="544.3" font-family="Arial" font-size="37.6" fill="#000000" text-anchor="end">
+4
+</text>
+
+<text x="52.0" y="482.3" font-family="Arial" font-size="37.6" fill="#000000" text-anchor="end">
+5
+</text>
+
+<text x="52.0" y="420.4" font-family="Arial" font-size="37.6" fill="#000000" text-anchor="end">
+6
+</text>
+
+<text x="52.0" y="358.4" font-family="Arial" font-size="37.6" fill="#000000" text-anchor="end">
+7
+</text>
+
+<text x="52.0" y="296.4" font-family="Arial" font-size="37.6" fill="#000000" text-anchor="end">
+8
+</text>
+
+<text x="52.0" y="234.4" font-family="Arial" font-size="37.6" fill="#000000" text-anchor="end">
+9
+</text>
+
+<text x="52.0" y="172.5" font-family="Arial" font-size="37.6" fill="#000000" text-anchor="end">
+10
+</text>
+<path stroke="#000000" stroke-width="2" fill="none"
+  d="M 73.7,777.3 L 73.7,157.6 M 58.2,777.3 L 89.2,777.3 M 58.2,715.4 L 89.2,715.4 M 58.2,653.4 L 89.2,653.4 M 58.2,591.4 L 89.2,591.4 M 58.2,529.4 L 89.2,529.4 M 58.2,467.5 L 89.2,467.5 M 58.2,405.5 L 89.2,405.5 M 58.2,343.5 L 89.2,343.5 M 58.2,281.5 L 89.2,281.5 M 58.2,219.6 L 89.2,219.6 M 58.2,157.6 L 89.2,157.6 "
+ />
+<path stroke="#000000" stroke-width="2" fill="none"
+  d="M 1003.3,777.3 L 1003.3,157.6 M 987.8,777.3 L 1018.8,777.3 M 987.8,715.4 L 1018.8,715.4 M 987.8,653.4 L 1018.8,653.4 M 987.8,591.4 L 1018.8,591.4 M 987.8,529.4 L 1018.8,529.4 M 987.8,467.5 L 1018.8,467.5 M 987.8,405.5 L 1018.8,405.5 M 987.8,343.5 L 1018.8,343.5 M 987.8,281.5 L 1018.8,281.5 M 987.8,219.6 L 1018.8,219.6 M 987.8,157.6 L 1018.8,157.6 "
+ />
+
+</g>
+
+<g transform="translate(0.0,-720.8)">
+
+<g transform="translate(0.0,-0.0)">
+<path stroke="#000000" stroke-width="4" fill="none"
+  d="M 73.7,777.3 L 120.2,777.3 "
+ />
+
+<text x="126.4" y="792.8" font-family="Arial" font-size="31.3" fill="#000000" text-anchor="start">
+people
+</text>
+
+</g>
+
+</g>
+<path stroke="none" fill="#000000"
+  d="M 118.3,778.8 L 118.3,610.6 L 180.5,610.6 L 180.5,778.8 
+M 138.8,610.2 L 163.6,610.2 M 138.8,609.9 L 163.6,609.9 M 151.2,610.2 L 151.2,609.9 M 151.2,610.0 
+
+M 196.1,778.8 L 196.1,647.9 L 258.4,647.9 L 258.4,778.8 
+M 216.3,647.3 L 241.1,647.3 M 216.3,647.1 L 241.1,647.1 M 228.7,647.3 L 228.7,647.1 M 228.7,647.2 
+M 274.0,778.8 L 274.0,292.9 L 336.3,292.9 L 336.3,778.8 
+M 293.7,294.1 L 318.5,294.1 M 293.7,293.8 L 318.5,293.8 M 306.1,294.1 L 306.1,293.8 M 306.1,293.9 
+M 429.7,778.8 L 429.7,747.6 L 492.0,747.6 L 492.0,778.8 
+M 448.7,746.5 L 473.5,746.5 M 448.7,746.2 L 473.5,746.2 M 461.1,746.5 L 461.1,746.2 M 461.1,746.3 
+M 507.6,778.8 L 507.6,716.5 L 569.9,716.5 L 569.9,778.8 
+M 526.1,715.5 L 550.9,715.5 M 526.1,715.2 L 550.9,715.2 M 538.5,715.5 L 538.5,715.2 M 538.5,715.4 
+M 585.5,778.8 L 585.5,218.1 L 647.8,218.1 L 647.8,778.8 
+M 603.6,219.7 L 628.4,219.7 M 603.6,219.4 L 628.4,219.4 M 616.0,219.7 L 616.0,219.4 M 616.0,219.6 
+M 741.2,778.8 L 741.2,635.5 L 803.5,635.5 L 803.5,778.8 
+M 758.5,634.9 L 783.3,634.9 M 758.5,634.7 L 783.3,634.7 M 770.9,634.9 L 770.9,634.7 M 770.9,634.8 
+M 819.1,778.8 L 819.1,704.0 L 881.4,704.0 L 881.4,778.8 
+M 836.0,703.1 L 860.8,703.1 M 836.0,702.8 L 860.8,702.8 M 848.4,703.1 L 848.4,702.8 M 848.4,703.0 
+M 896.9,778.8 L 896.9,280.4 L 959.2,280.4 L 959.2,778.8 
+M 913.5,281.6 L 938.3,281.6 M 913.5,281.4 L 938.3,281.4 M 925.9,281.6 L 925.9,281.4 M 925.9,281.5 
+"
+ />
+
+<text x="736.2" y="873.9" font-family="Arial" font-size="31.3" fill="#000000" text-anchor="start">
+Noisy Disjunctive
+</text>
+
+<text x="450.2" y="881.1" font-family="Arial" font-size="31.3" fill="#000000" text-anchor="start">
+Det. Disjunctive
+</text>
+
+<text x="143.7" y="873.9" font-family="Arial" font-size="31.3" fill="#000000" text-anchor="start">
+Conjunctive
+</text>
+</svg>

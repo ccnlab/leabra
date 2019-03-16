@@ -1,0 +1,1 @@
+_H:	|batch	|epoch	$train_mode	|trial	|tick	$trial_name	%minus_cycles	%sse	%norm_err	%cos_err	%ext_rew

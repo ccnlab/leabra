@@ -1,0 +1,241 @@
+\section{Appendix: Implementational Details}
+
+% THIS VERSION DESCRIBES emergent 7.1.0 implementation
+
+The model was implemented using the Leabra framework, which is described in detail in \incite{OReillyMunakataFrankEtAl12}, \incite{OReillyMunakata00}, \incite{OReilly01}, and summarized here.  These same equations and largely default parameters (see below) have been used to simulate over 40 different models in \incite{OReillyMunakataFrankEtAl12} and \incite{OReillyMunakata00}, and a number of other research models.  Thus, the model can be viewed as an instantiation of a systematic modeling framework using standardized mechanisms, instead of constructing new mechanisms for each model.  The model can be obtained by emailing the first author at \url{randy.oreilly@colorado.edu}.
+
+This version of Leabra contains three primary differences from the original \cite{OReillyMunakata00}: the activation function is slightly different, in a way that allows units to more accurately reflect their graded excitatory input drive, the inhibition function is much simpler and more biologically realistic, and the learning rule takes a more continuous form involving contrasts between values integrated over different time frames (i.e., with different time constants), which also produces a combination of error-driven and self-organizing learning within the same simple mathematical framework.  These modifications are described in detail in an updated version of the \incite{OReillyMunakata00} textbook, in \incite{OReillyMunakataFrankEtAl12}.  This new learning algorithm goes by the acronym of XCAL (temporally eXtended Contrastive Attractor Learning), and it replaces the combination of Contrastive Hebbian Learning (CHL) and standard Hebbian learning used in the original Leabra framework.
+
+\subsection{Leabra Algorithm Overview}
+
+The basic activation dynamics of Leabra are based on standard electrophysiological principles of real neurons, and in discrete spiking mode we implement exactly the AdEx (adapting exponential) model of Gerstner and colleagues \cite{BretteGerstner05}. The rate code mode (which runs faster and allows for smaller networks) provides a very close approximation to the AdEx model behavior, in terms of a graded activation signal matching the actual instantaneous rate of spiking across a population of AdEx neurons. We generally conceive of a single rate-code neuron as representing a microcolumn of roughly 100 spiking pyramidal neurons in the neocortex. There are also short-term plasticity dynamics that produce synaptic depression and potentiation, as described in \incite{Hennig13}.
+
+The excitatory synaptic input conductances (i.e., net input) is computed as an average, not a sum, over connections, based on normalized, sigmoidaly transformed weight values, which are subject to scaling on a connection-group level to alter relative contributions. Automatic scaling is performed to compensate for differences in expected activity level in the different projections.
+
+Inhibition is computed using a feed-forward (FF) and feed-back (FB) inhibition function (FFFB) that closely approximates the behavior of inhibitory interneurons in the neocortex. FF is based on a multiplicative factor applied to the average net input coming into a layer, and FB is based on a multiplicative factor applied to the average activation within the layer. These simple linear functions do an excellent job of controlling the overall activation levels in bidirectionally connected networks, producing behavior very similar to the more abstract computational implementation of kWTA dynamics implemented in previous versions.
+
+There is a single learning equation, derived from a very detailed model of spike timing dependent plasticity (STDP) by \incite{UrakuboHondaFroemkeEtAl08}, that produces a combination of Hebbian associative and error-driven learning. For historical reasons, we call this the XCAL equation (eXtended Contrastive Attractor Learning), and it is functionally very similar to the BCM learning rule developed by \incite{BienenstockCooperMunro82}. The essential learning dynamic involves a Hebbian co-product of sending neuron activation times receiving neuron activation, which biologically reflects the amount of calcium entering through NMDA channels, and this co-product is then compared against a floating threshold value. To produce the Hebbian learning dynamic, this floating threshold is based on a long-term running average of the receiving neuron activation. This is the key idea for the BCM algorithm. To produce error-driven learning, the floating threshold is based on a much faster running average of activation co-products, which reflects an expectation or prediction, against which the instantaneous, later outcome is compared.
+
+Weights are subject to a contrast enhancement function, which compensates for the soft (exponential) weight bounding that keeps weights within the normalized 0-1 range. Contrast enhancement is important for enhancing the selectivity of self-organizing learning, and generally results in faster learning with better overall results. Learning operates on the underlying internal linear weight value. Biologically, we associate the underlying linear weight value with internal synaptic factors such as actin scaffolding, CaMKII phosphorlation level, etc, while the contrast enhancement operates at the level of AMPA receptor expression. We also support (optionally) a distinction between fast and slow weights -- biologically fast weights reflect the early LTP dynamics, which rise and fall over roughly 15 minutes after induction, while slow weights reflect the stable long-term weight values that the fast weights decay back to.
+
+% There are various extensions to the algorithm that implement special neural mechanisms associated with the prefrontal cortex and basal ganglia (PBWM), dopamine systems PVLV, the Hippocampus, and temporal integration dynamics associated with the thalamocortical circuits (LeabraTI, and CIFER).
+
+\subsection{Leabra Algorithm Equations}
+
+The pseudocode for Leabra is given here, showing exactly how the pieces of the algorithm fit together, using the equations and variables from the actual code (without any of the complexity associated with various optimizations).
+
+\subsubsection{Variables}
+
+LeabraUnits are organized into LeabraLayers, which sometimes have unit groups (which are typically purely virtual structures).  The LeabraUnit has the following key parameters, along with a number of others that are used for other non-default algorithms and various optimizations, etc.
+\begin{itemize}
+\item {\bf act} activation sent to other units
+\item {\bf act\_nd} non-depressed activation -- prior to application of any short-term plasticity
+\item {\bf net\_raw} raw netinput, prior to time-averaging
+\item {\bf net} time-averaged excitatory conductance (net input)
+\item {\bf gc\_i} inhibitory conductance, computed from FFFB inhibition function typically
+\item {\bf I\_net} net current, combining excitatory, inhibitory, and leak channels
+\item {\bf v\_m} membrane potential
+\item {\bf v\_m\_eq} equilibrium membrane potential -- not reset by spikes -- just keeps integrating
+\item {\bf adapt} adaptation current
+\item {\bf avg\_ss} super-short term running average activation
+\item {\bf avg\_s} short-term running average activation, integrates over avg\_ss, represents plus phase learning signal
+\item {\bf avg\_m} medium-term running average activation, integrates over avg\_s, represents minus phase learning signal
+\item {\bf avg\_l} long-term running average activation, integrates over avg\_m, drives long-term floating average for Hebbian learning
+\end{itemize}
+
+Units are connected via synapses parameterized with the following variables.  These are actually stored in an optimized vector format, but the LeabraCon object contains the variables as a template.
+\begin{itemize}
+\item {\bf wt} net effective synaptic weight between objects -- subject to contrast enhancement compared to fwt and swt
+\item {\bf dwt} delta-wt -- change in synaptic weights due to learning
+\item {\bf fwt} fast weight -- used for advanced fast and slow weight learning dynamic -- otherwise equal to swt -- stored as non-contrast enhanced value
+\item {\bf swt} slow weight -- standard learning rate weight -- stored as non-contrast enhanced value
+\end{itemize}
+
+\subsubsection{LeabraCycle: Net input, Inhibition, Activation}
+
+For every cycle of activation updating, compute the net input, inhibition, membrane potential, and activation:
+
+\begin{itemize}
+\item {\bf Net input} (excitatory synaptic input):
+  \begin{itemize}
+  \item {\tt  {\bf net\_raw} +=  (sum over recv connections of:) scale\_eff * act * wt}
+    \begin{itemize}
+    \item {\bf scale\_eff} = factor that includes 1/N to compute an average, plus wt\_scale.rel and abs relative and absolute scaling terms.
+    \item {\bf act} = sending unit activation
+    \item {\bf wt} = receiving connection weight value between sender and receiver
+    \item {\em emergent} does this very efficiently by using a sender-based computation, that only sends {\em changes} (deltas) in activation values -- typically only a few percent of neurons send on any given cycle.
+    \end{itemize}
+  \item {\tt {\bf net} += dt.integ * dt.net\_dt * (net\_raw - net)}
+    \begin{itemize}
+    \item time integration of net input, using net\_dt (1/1.4 default), and global integration time constant, dt.integ (1 = 1 msec default)
+    \end{itemize}
+  \end{itemize}
+
+\item {\bf Inhibition} (summary computed inhibitory synaptic input):
+  \begin{itemize}
+  \item {\tt {\bf ffi} = ff * MAX(netin.avg - ff0, 0)}
+    \begin{itemize}
+    \item feedforward component of inhibition with ff multiplier -- has ff0 offset and can't be negative (that's what the MAX(.. ,0) part does).
+    \item {\bf netin.avg} is average of net variable across unit group or layer, depending on what level this is being computed at (both are supported)
+    \end{itemize}
+  \item {\tt {\bf fbi} += fb\_dt * (fb * acts.avg - fbi)}
+  \item feedback component of inhibition with fb multiplier -- requires time integration to dampen oscillations that otherwise occur -- fb\_dt = 1/1.4 default
+  \item {\tt {\bf gc\_i} = gi * (ffi + fbi)}
+  \end{itemize}
+
+\item {\bf Membrane potential} (integrates excitation, inhibition, and leak)
+  \begin{itemize}
+  \item {\tt {\bf I\_net} = net * (e\_rev.e - v\_m) + gc\_l * (e\_rev.l - v\_m) + gc\_i * (e\_rev.i - v\_m) + noise}
+    \begin{itemize}
+    \item net current = sum of individual ionic channels: e = excitatory, l = leak (gc\_l is a constant, 0.1 default), and i = inhibitory
+    \item e\_rev are reversal potentials: in normalized values derived from biophysical values, e\_rev.e = 1, .l = 0.3, i = 0.25
+    \item noise is typically gaussian if added
+    \end{itemize}
+  \item if ex: {\tt {\bf I\_net} += g\_bar.l * exp\_slope * exp((v\_m - thr) / exp\_slope)}
+    \begin{itemize}
+    \item this is the exponential component of AdEx, if in use (typically only for discrete spiking), exp\_slope = .02 default
+    \end{itemize}
+  \item {\tt {\bf v\_m} += dt.integ * dt.vm\_dt * (I\_net - adapt)}
+    \begin{itemize}
+    \item in {\em emergent}, we use a simple midpoint method that evaluates v\_m with a half-step time constant, and then uses this half-step v\_m to compute full step in above I\_net equation. vm\_dt = 1/3.3 default.
+    \item v\_m is always computed as in discrete spiking, even when using rate code, with v\_m reset to vm\_r etc -- this provides a more natural way to integrate adaptation and short-term plasticity mechanisms, which drive off of the discrete spiking.
+    \end{itemize}
+  \item {\tt {\bf v\_m\_eq} +=  dt.integ * dt.vm\_dt * (I\_net - adapt)}
+    \begin{itemize}
+    \item the {\em equilibrium} version of the membrane potential does {\em not} reset with spikes, and is important for rate code per below
+    \end{itemize}
+  \end{itemize}
+
+\item {\bf Activation} (see LeabraUnitSpec.cpp for code)
+  \begin{itemize}
+  \item {\tt {\bf g\_e\_thr} = (gc\_i * (e\_rev\_i - thr) + gc\_l * (e\_rev\_l - thr) - adapt) / (thr - e\_rev.e)}
+    \begin{itemize}
+    \item the amount of excitatory conductance required to put the neuron exactly at the firing threshold, thr = .5 default.
+    \end{itemize}
+  \item {\tt if(v\_m > spk\_thr) { spike = 1; v\_m = vm\_r } else { spike = 0 }}
+    \begin{itemize}
+    \item spk\_thr is spiking threshold (1.2 default, different from rate code thr), vm\_r = .3 is the reset value of the membrane potential after spiking -- we also have an optional refractory period after spiking, default = 3 cycles, where the vm equations are simply not computed, and vm remains at vm\_r.
+    \item if using spiking mode, then {\bf act} = spike, otherwise, rate code function is below
+    \end{itemize}
+  \item {\tt if(v\_m\_eq <= thr) { {\bf new\_act} = NXX1(v\_m\_eq - thr) } else { {\bf new\_act} = NXX1(net - g\_e\_thr) }}
+    \begin{itemize}
+    \item it is important that the time to first spike be governed by v\_m integration dynamics, but after that point, it is essential that activation drive directly from the excitatory conductance (g\_e or net) relative to the g\_e\_thr threshold -- activation rates are linear in this term, but not even a well-defined function of v\_m\_eq -- earlier versions of Leabra only used the v\_m\_eq-based term, and this led to some very strange behavior.
+    \item NXX1 = noisy-x-over-x+1 function, which is implemented using a lookup table due to the convolving of the XX1 function with a gaussian noise kernel
+    \item {\tt XX1(x) = gain * x / (gain * x + 1)}
+    \item gain = 100 default
+    \end{itemize}
+  \item {\tt {\bf act\_nd} += dt.integ * dt.vm\_dt * (new\_act - act\_nd)}
+    \begin{itemize}
+    \item non-depressed rate code activation is time-integrated using same vm\_dt time constant as used in v\_m, from the new activation value
+    \end{itemize}
+  \item {\tt {\bf act} = act\_nd * syn\_tr  (or just act\_nd)}
+    \begin{itemize}
+    \item if short-term plasticity is in effect, then syn\_tr variable reflects the synaptic transmission efficacy, and this product provides the net signal sent to the receiving neurons.  otherwise syn\_tr = 1.
+    \end{itemize}
+  \item {\tt {\bf adapt} += dt.integ * (adapt.dt * (vm\_gain * (v\_m - e\_rev.l) - adapt) + spike * spike\_gain)}
+    \begin{itemize}
+    \item adaptation current -- causes rate of activation / spiking to decrease over time, adapt.dt = 1/144, vm\_gain = 0.04, spike\_gain = .00805 defaults
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{Learning}
+
+\begin{SCfigure}[20][t]
+  \includegraphics[width=2in]{figs/fig_xcal_dwt_fun}
+  \caption{\footnotesize The XCAL dWt function, showing direction and magnitude of synaptic weight changes (dWt) as a function of the short-term average activity of the sending neuron ({\em x}) times the receiving neuron ({\em y}).  This quantity is a simple mathematical approximation to the level of postsynaptic Ca++, reflecting the dependence of the NMDA channel on both sending and receiving neural activity.  This function was extracted directly from the detailed biophysical Urakubo et al. (2008) model, by fitting a piecewise linear function to the synaptic weight change behavior that emerges from it as a function of a wide range of sending and receiving spiking patterns.}
+  \label{fig.xcal_dwt_fun}
+\end{SCfigure}
+
+After iterating over some number of cycles, with typically the first set of 50 to 75 cycles being in the minus phase (no target values clamped on output layers, or other sources of plus phase signals as in LeabraTI), and the final 25 cycles being the plus phase, where targets or other training signals are present, then learning equations are computed.  These are based on running averages of activations as shown first.
+
+\begin{itemize}
+\item {\bf Running averages} computed continuously every cycle, and note the compounding form (see LeabraUnitSpec.cpp for code)
+  \begin{itemize}
+  \item {\tt {\bf avg\_ss} += dt.integ * ss\_dt * (act\_nd - avg\_ss)}
+    \begin{itemize}
+    \item super-short time scale running average, ss\_dt = 1/2 default -- this was introduced to smooth out discrete spiking signal, but is also useful for rate code
+    \end{itemize}
+  \item {\tt {\bf avg\_s} += dt.integ * act\_avg.s\_dt * (avg\_ss - avg\_s)}
+    \begin{itemize}
+    \item short time scale running average, s\_dt = 1/2 default -- this represents the "plus phase" or actual outcome signal in comparison to avg\_m
+    \end{itemize}
+  \item {\tt {\bf avg\_m} += dt.integ * act\_avg.m\_dt * (avg\_s - avg\_m)}
+    \begin{itemize}
+    \item medium time-scale running average, m\_dt = 1/10 average -- this represents the "minus phase" or expectation signal in comparison to avg\_s
+    \end{itemize}
+  \item {\tt {\bf avg\_l} += (avg\_m > 0.1) ? (avg\_m * l\_up\_inc) :\\
+      (l\_dn\_dt * own\_lay.acts\_p\_avg\_eff * (avg\_m - avg\_l))}
+    \begin{itemize}
+    \item long-term running average -- this is computed just once per learning trial, {\em not every cycle} like the ones above -- l\_up\_inc = .1, l\_dn\_tau = 2.5 defaults
+    \item the logic is that the additive increases can increase without bound, to drive high long-term running average, while it decays down to the natural 0 bound exponentially -- x ? y : z terminology is C syntax for if x is true, then y, else z
+    \end{itemize}
+  \end{itemize}
+
+\item {\bf Learning equation} (most of these are intermediate variables used in computing final dwt value)
+  \begin{itemize}
+  \item {\tt {\bf srs} = ru->avg\_s * su->avg\_s}
+    \begin{itemize}
+    \item short-term sender-receiver co-product -- this is the intracellular calcium from NMDA and other channels
+    \end{itemize}
+  \item {\tt {\bf srm} = ru->avg\_m * su->avg\_m}
+    \begin{itemize}
+    \item medium-term sender-receiver co-product -- this drives dynamic threshold for error-driven learning
+    \end{itemize}
+  \item {\tt {\bf sm\_mix} = s\_mix * srs + (1-s\_mix) * srm}
+    \begin{itemize}
+    \item mix in some of the medium-term factor into the short-term factor -- this is important for ensuring that when neuron turns off in the plus phase (short term), that enough trace of earlier minus-phase activation remains to drive it into the LTD weight decrease region -- s\_mix = .9 default.
+    \end{itemize}
+  \item {\tt {\bf lthr} = thr\_l\_mix * cos\_diff\_avg * su->avg\_m * ru->avg\_l}
+    \begin{itemize}
+    \item long-term floating threshold value -- drives Hebbian BCM learning component -- key driver is receiving unit avg\_l, but we also need to multiply by avg\_m to keep value in proper dynamic range as the srs term that drives learning -- avg\_s could alternatively be used (to produce a more purely self-organizing learning dynamic), but given that avg\_m shows up in error-driven term as well, it is more parsimonious to use it here (and it works better overall) -- thr\_l\_mix is a constant (.05 default) determining how much of the learning is based on this hebbian long-term value
+    \item lthr can (optionally) be weighted by the cos\_diff\_avg factor which is the normalized dot product (cosine) of the minus versus plus phase activations on the receiving layer, measuring the overall size of the error signal, averaged over a long time scale (100 trial tau time constant) -- this accounts for the fact that some layers tend to have much larger error signals than others, based on where they are in the structural hierarchy, and that then affects the overall balance of hebbian vs. error-driven learning factors -- this factor allows us to use a single constant thr\_l\_mix term for the entire network, whereas otherwise achieving the same net balance of learning terms requires setting different parameters for each layer in the network.  We assume that evolution could figure out these differential parameters, but we could sure use the shortcut.
+    \end{itemize}
+  \item {\tt {\bf mthr} = (1 - thr\_l\_mix * cos\_diff\_avg) * srm}
+    \begin{itemize}
+    \item medium-term floating threshold value -- weighted by 1 minus the long-term factor, so that net threshold is weighted average of the Hebbian long-term-average factor and the error-driven medium-term average factor.
+    \end{itemize}
+  \item {\tt {\bf dwt} += lrate * XCAL(sm\_mix, lthr + mthr) }
+    \begin{itemize}
+    \item the change in weights is a function of the short-term average coproduct (with a little bit of m mixed in) and the combined long-term and medium-term floating threshold terms.
+    \item XCAL is the ``check mark'' linearized BCM-style learning function (see Figure~\ref{fig.xcal_dwt_fun}) that was derived from the Urakubo Et Al (2008) STDP model, as described in more detail in the CCN textbook: \url{http://ccnbook.colorado.edu}
+    \item{\tt  XCAL(x, th) = (x < d\_thr) ? 0 : (x > th * d\_rev) ? (x - th) : (-x * ((1-d\_rev)/d\_rev))}
+    \item d\_thr = 0.0001, d\_rev = 0.1 defaults
+    \item x ? y : z terminology is C syntax for: if x is true, then y, else z
+    \end{itemize}
+  \end{itemize}
+
+\item {\bf Weight update equation} -- applied after any MPI integration of dwt's
+  \begin{itemize}
+  \item {\tt  dwt *= (dwt > 0) ? (1-fwt) : fwt}
+    \begin{itemize}
+    \item soft weight bounding -- weight increases exponentially decelerate toward upper bound of 1, and decreases toward lower bound of 0.  based on fast weights (in linear, non-contrast enhanced form), so that fast weights can drive learning saturation if in effect.
+    \end{itemize}
+  \item {\tt  {\bf fwt} += dwt + decay\_dt * (swt - fwt) }
+    \begin{itemize}
+    \item fast weights, if in effect, decay back to slow weights -- otherwise fwt = swt and so it just takes the increment from dwt
+    \end{itemize}
+  \item {\tt  {\bf swt} += dwt * slow\_lrate }
+    \begin{itemize}
+    \item slow weights, if using fast weights, learn at a slower learning rate based on same dwt term -- otherwise swt = fwt
+    \end{itemize}
+  \item {\tt  {\bf nwt} = SIG(fwt) }
+    \begin{itemize}
+    \item new weight value is sigmoidal contrast enhanced version of fast weight (nwt is not stored -- just a tmp variable)
+    \item {\tt SIG(x) = 1 / (1 + (off * (1-w)/w)**gain)}
+    \end{itemize}
+  \item {\tt  {\bf wt} += wt\_dt * (nwt - wt) }
+    \begin{itemize}
+    \item weight moves toward new weight value with a time constant -- reflects slowed rise time seen in early LTP dynamics -- if not using fast weights, then wt = nwt directly (as if wt\_dt = 1)
+    \end{itemize}
+  \item {\tt  {\bf dwt} = 0 }
+    \begin{itemize}
+    \item reset weight changes now that they have been applied.
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

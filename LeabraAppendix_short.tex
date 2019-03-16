@@ -1,0 +1,186 @@
+\section{Appendix: Implementational Details}
+
+The model was implemented using the Leabra framework, which is
+described in detail in \incite{OReillyMunakata00} and
+\incite{OReilly01}, and summarized here.  See
+Table~\ref{tab.sim_params} for a listing of parameter values, nearly
+all of which are at their default settings.  These same parameters and
+equations have been used to simulate over 40 different models in
+\incite{OReillyMunakata00}, and a number of other research models.
+Thus, the model can be viewed as an instantiation of a systematic
+modeling framework using standardized mechanisms, instead of
+constructing new mechanisms for each model.  The model can be obtained
+by emailing the first author at oreilly@psych.colorado.edu.
+
+\subsection{Point Neuron Activation Function} 
+
+\begin{table}
+  \centering
+  \begin{tabular}{ll|ll} \hline
+Parameter & Value & Parameter & Value \\ \hline
+$E_l$ & 0.15 & $\overline{g_l}$ & 0.10 \\
+$E_i$ & 0.15 & $\overline{g_i}$ & 1.0 \\
+$E_e$ & 1.00 & $\overline{g_e}$ & 1.0 \\
+$V_{rest}$ & 0.15 & $\Theta$    & 0.25 \\
+$\tau$ & .02 & $\gamma$ & 600 \\
+$k$ Post Ctx & 2* & $k$ Output  & 1* \\
+$k$ Feat PFC & 2* & $k$ Dim PFC & 1* \\
+$k_{hebb}$ & .02 & $\epsilon$ & .01 \\
+to AC $\epsilon$ & .04* & \\ \hline
+  \end{tabular}
+  \caption{\small Parameters for the simulation (see equations in text
+    for explanations of parameters).  All are standard
+    default parameter values except for those with a * (most of which
+    have no default because they are intrinsically task-dependent).
+    The faster learning rate ($\epsilon$) for connections into the AC
+    was important for ensuring rapid learning of reward.}
+  \label{tab.sim_params}
+\end{table}
+
+Leabra uses a {\em point neuron} activation function that models the
+electrophysiological properties of real neurons, while simplifying
+their geometry to a single point.  The membrane potential $V_m$ is
+updated as a function of ionic conductances $g$ with reversal
+(driving) potentials $E$ as follows:
+\begin{equation}
+  \Delta V_m(t) = \tau \sum_c g_c(t) \overline{g_c} (E_c - V_m(t))
+  \label{eq.vm}
+\end{equation}
+with 3 channels ($c$) corresponding to: $e$ excitatory input; $l$ leak
+current; and $i$ inhibitory input.  Following electrophysiological
+convention, the overall conductance is decomposed into a time-varying
+component $g_c(t)$ computed as a function of the dynamic state of the
+network, and a constant $\overline{g_c}$ that controls the relative
+influence of the different conductances.
+
+The excitatory net input/conductance $g_e(t)$ or $\eta_j$ is computed
+as the proportion of open excitatory channels as a function of sending
+activations times the weight values:
+\begin{equation}
+  \eta_j = g_e(t) = \langle x_i \wij \rangle = \oneo{n} \sum_i x_i \wij
+  \label{eq.net_in_avg}
+\end{equation}
+The inhibitory conductance is computed via the kWTA function described
+in the next section, and leak is a constant.
+
+Activation communicated to other cells ($y_j$) is a thresholded
+($\Theta$) sigmoidal function of the membrane potential with gain
+parameter $\gamma$:
+\begin{equation}
+  y_j(t) = \oneo{\left(1 + \oneo{\gamma [V_m(t) - \Theta]_+} \right)}
+\end{equation}
+where $[x]_+$ is a threshold function that returns 0 if $x<0$ and $x$
+if $X>0$.  Note that if it returns 0, we assume $y_j(t) = 0$, to avoid
+dividing by 0.  To produce a less discontinuous deterministic
+function with a softer threshold, the function is convolved with a
+Gaussian noise kernel ($\mu=0$, $\sigma=.005$), which reflects the
+intrinsic processing noise of biological neurons:
+\begin{equation}
+  y^*_j(x) = \int_{-\infty}^{\infty} \oneo{\sqrt{2 \pi} \sigma}
+  e^{-z^2/(2 \sigma^2)} y_j(z-x) dz
+  \label{eq.conv}
+\end{equation}
+where $x$ represents the $[V_m(t) - \Theta]_+$ value, and $y^*_j(x)$
+is the noise-convolved activation for that value.  In the simulation,
+this function is implemented using a numerical lookup table.
+
+\subsection{k-Winners-Take-All Inhibition}
+
+Leabra uses a kWTA (k-Winners-Take-All) function to achieve inhibitory
+competition among units within a layer (area).  The kWTA function
+computes a uniform level of inhibitory current $g_i$ for all units in
+the layer, such that the $k+1$th most excited unit within a layer is
+generally below its firing threshold, while the $k$th is typically
+above threshold:
+\begin{equation}
+  g_i = g^{\Theta}_{k+1} + q (g^{\Theta}_k - g^{\Theta}_{k+1})
+  \label{eq.g_i}
+\end{equation}
+where $0<q<1$ (.25 default used here) is a parameter for setting the
+inhibition between the upper bound of $g^{\Theta}_k$ and the lower
+bound of $g^{\Theta}_{k+1}$.  These boundary inhibition values are
+computed as a function of the level of inhibition necessary to keep a
+unit right at threshold:
+\begin{equation}
+  g_i^{\Theta} = \frac{g^*_e \bar{g_e} (E_e - \Theta) +
+    g_l \bar{g_l} (E_l - \Theta)}{\Theta - E_i}
+  \label{eq.i_at_thr}
+\end{equation}
+where $g^*_e$ is the excitatory net input without the bias weight
+contribution --- this allows the bias weights to override the kWTA
+constraint.
+
+In the basic version of the kWTA function, which is relatively rigid
+about the kWTA constraint and is therefore used for output layers,
+$g^{\Theta}_k$ and $g^{\Theta}_{k+1}$ are set to the threshold
+inhibition value for the $k$th and $k+1$th most excited units,
+respectively.  In the {\em average-based} kWTA version, $g^{\Theta}_k$
+is the average $g_i^{\Theta}$ value for the top $k$ most excited
+units, and $g^{\Theta}_{k+1}$ is the average of $g_i^{\Theta}$ for the
+remaining $n-k$ units.  This version allows for more flexibility in
+the actual number of units active depending on the nature of the
+activation distribution in the layer.
+
+\subsection{Hebbian and Error-Driven Learning} 
+
+For learning, Leabra uses a combination of error-driven and Hebbian
+learning.  The error-driven component is the symmetric midpoint
+version of the GeneRec algorithm \cite{OReilly96}, which is
+functionally equivalent to the deterministic Boltzmann machine and
+contrastive Hebbian learning (CHL).  The network settles in two
+phases, an expectation (minus) phase where the network's actual output
+is produced, and an outcome (plus) phase where the target output is
+experienced, and then computes a simple difference of a pre and
+postsynaptic activation product across these two phases.  For Hebbian
+learning, Leabra uses essentially the same learning rule used in
+competitive learning or mixtures-of-Gaussians which can be seen as a
+variant of the Oja normalization \cite{Oja82}.  The error-driven and
+Hebbian learning components are combined additively at each connection
+to produce a net weight change.
+
+The equation for the Hebbian weight change is:
+\begin{equation}
+  \Delta_{hebb} \wij = x^+_i y^+_j - y^+_j \wij = y^+_j (x^+_i - \wij)
+  \label{eq.hebb}
+\end{equation}
+and for error-driven learning using CHL:
+\begin{equation}
+  \Delta_{err} \wij = (x^+_i y^+_j) - (x^-_i y^-_j)
+  \label{eq.err}
+\end{equation}
+which is subject to a soft-weight bounding to keep within the $0-1$
+range:
+\begin{equation}
+  \Delta_{sberr} \wij = [\Delta_{err}]_+ (1-\wij) + [\Delta_{err}]_- \wij
+  \label{eq.err_soft_bound}
+\end{equation}
+The two terms are then combined additively with a normalized mixing
+constant $k_{hebb}$:
+\begin{equation}
+  \Delta \wij = \epsilon[k_{hebb} (\Delta_{hebb}) + (1-k_{hebb}) (\Delta_{sberr})]
+  \label{eq.k_hebb}
+\end{equation}
+
+\subsection{Weight Contrast Enhancement} 
+
+One limitation of the Hebbian learning algorithm is that the weights
+linearly reflect the strength of the conditional probability.  This
+linearity can limit the network's ability to focus on only the
+strongest correlations, while ignoring weaker ones.  To remedy this
+limitation, we introduce a contrast enhancement function that
+magnifies the stronger weights and shrinks the smaller ones in a
+parametric, continuous fashion.  This contrast enhancement is achieved
+by passing the linear weight values computed by the learning rule
+through a sigmoidal nonlinearity of the following form:
+\begin{equation}
+  \hat{w}_{ij} = \oneo{1 + \left(\frac{\wij}{\theta (1-\wij)}\right)^{-\gamma}}
+  \label{eq.wt_off}
+\end{equation}
+where $\hat{w}_{ij}$ is the contrast-enhanced weight value, and the
+sigmoidal function is parameterized by an offset $\theta$ and a gain
+$\gamma$ (standard defaults of 1.25 and 6, respectively, used here).  
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

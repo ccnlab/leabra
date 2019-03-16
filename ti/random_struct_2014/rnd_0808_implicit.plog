@@ -1,0 +1,50 @@
+Fri Aug 15 02:15:25 2014: taMisc::SetLogFile -- Log file opened for writing.
+Fri Aug 15 02:15:58 2014: *** LOG: SaveUndo of action: Call Method: NewChild on: LeabraConSpec_0 at path: .networks[0].specs[5] saving at: .
+Fri Aug 15 02:15:59 2014: *** LOG: last_diff_n:  1765  pct:  0.0221834
+Fri Aug 15 02:16:05 2014: *** LOG: SaveUndo of action: Edit on: LeabraConSpec_2 at path: .networks[0].specs[5].children[2] saving at: .networks[0].specs[5].children[2]
+Fri Aug 15 02:16:12 2014: *** LOG: SaveUndo of action: Edit on: Fm_Input at path: .networks[0].layers[5].projections[0] saving at: .networks[0].layers[5].projections[0]
+Fri Aug 15 02:16:16 2014: *** LOG: SaveUndo of action: Edit on: FmInput at path: .networks[0].specs[5].children[2] saving at: .networks[0].specs[5].children[2]
+Fri Aug 15 02:16:22 2014: *** LOG: SaveUndo of action: Edit on: FmInput at path: .networks[0].specs[5].children[2] saving at: .networks[0].specs[5].children[2]
+Fri Aug 15 02:16:32 2014: *** LOG: SaveUndo of action: Call Method: Init on: LeabraBatch at path: .programs.gp[0][0] saving at: .
+Fri Aug 15 02:16:32 2014: *** LOG: last_diff_n:  338  pct:  0.00424815
+Fri Aug 15 02:16:33 2014: *** LOG: SaveUndo of action: Call Method: Run_Gui on: LeabraBatch at path: .programs.gp[0][0] saving at: .
+Fri Aug 15 02:16:33 2014: *** LOG: last_diff_n:  98  pct:  0.00123171
+Fri Aug 15 02:17:27 2014: *** LOG: SaveUndo of action: Edit on: ControlPanel at path: .ctrl_panels[0] saving at: .ctrl_panels[0]
+Fri Aug 15 02:18:00 2014: *** DEBUG: obj: NetView TINet_View::doing deferred refresh:() (path: .projects["rnd_0808_implicit"].viewers["Browser2"].frames["T3Frames"].panels["TINet"].root_view.children["TINet_View"])
+ 1  on:  TINet
+Fri Aug 15 02:18:06 2014: *** LOG: SaveUndo of action: Call Method: Init on: LeabraBatch at path: .programs.gp[0][0] saving at: .
+Fri Aug 15 02:18:06 2014: *** LOG: last_diff_n:  609  pct:  0.00765422
+Fri Aug 15 02:18:07 2014: *** LOG: SaveUndo of action: Call Method: Run_Gui on: LeabraBatch at path: .programs.gp[0][0] saving at: .
+Fri Aug 15 02:18:07 2014: *** LOG: last_diff_n:  314  pct:  0.00394651
+Fri Aug 15 02:18:40 2014: *** LOG: SaveUndo of action: Call Method: WhereUsed on: LeabraUnitSpec_0 at path: .networks[0].specs[3] saving at: .
+Fri Aug 15 02:18:40 2014: ***CONFIRM: WhereUsed Return Value: 
+(String)  = .projects["rnd_0808_implicit"].networks["TINet"].layers["Input_t4"]
+.projects["rnd_0808_implicit"].networks["TINet"].layers["Input_t3"]
+.projects["rnd_0808_implicit"].networks["TINet"].layers["Input_t2"]
+.projects["rnd_0808_implicit"].networks["TINet"].layers["Input_t1"]
+.projects["rnd_0808_implicit"].networks["TINet"].layers["Input"]
+.projects["rnd_0808_implicit"].networks["TINet"].layers["Hidden"]
+
+Fri Aug 15 02:18:40 2014: *** LOG: last_diff_n:  1767  pct:  0.0222085
+Fri Aug 15 02:18:55 2014: *** DEBUG: Saved auto save file: /Users/oreilly/svn_docs/leabra/ti/random_struct_2014/rnd_0808_implicit_autosave.proj
+Fri Aug 15 02:19:00 2014: *** LOG: SaveUndo of action: Call Method: Build on: TINet at path: .networks[0] saving at: .
+Fri Aug 15 02:19:00 2014: *** LOG: last_diff_n:  1772  pct:  0.0222714
+Fri Aug 15 02:19:04 2014: *** LOG: SaveUndo of action: Call Method: Init on: LeabraBatch at path: .programs.gp[0][0] saving at: .
+Fri Aug 15 02:19:05 2014: *** LOG: last_diff_n:  242  pct:  0.00304158
+Fri Aug 15 02:19:06 2014: *** LOG: SaveUndo of action: Call Method: Run_Gui on: LeabraBatch at path: .programs.gp[0][0] saving at: .
+Fri Aug 15 02:19:06 2014: *** LOG: last_diff_n:  220  pct:  0.00276507
+Fri Aug 15 02:19:36 2014: *** LOG: SaveUndo of action: Edit on: ControlPanel at path: .ctrl_panels[0] saving at: .ctrl_panels[0]
+Fri Aug 15 02:19:48 2014: *** LOG: SaveUndo of action: Call Method: WhereUsed on: FmInput at path: .networks[0].specs[5].children[2] saving at: .
+Fri Aug 15 02:19:48 2014: ***CONFIRM: WhereUsed Return Value: 
+(String)  = .projects["rnd_0808_implicit"].networks["TINet"].layers["Hidden"].projections["Fm_Input"]
+
+Fri Aug 15 02:19:48 2014: *** LOG: last_diff_n:  1974  pct:  0.0248102
+Fri Aug 15 02:19:59 2014: *** LOG: SaveUndo of action: Edit on: FmInput at path: .networks[0].specs[5].children[2] saving at: .networks[0].specs[5].children[2]
+Fri Aug 15 02:20:06 2014: *** LOG: SaveUndo of action: Edit on: FmInput at path: .networks[0].specs[5].children[2] saving at: .networks[0].specs[5].children[2]
+Fri Aug 15 02:20:54 2014: *** DEBUG: obj: NetView TINet_View::doing deferred refresh:() (path: .projects["rnd_0808_implicit"].viewers["Browser2"].frames["T3Frames"].panels["TINet"].root_view.children["TINet_View"])
+ 1  on:  TINet
+Fri Aug 15 02:21:05 2014: *** DEBUG: Saved auto save file: /Users/oreilly/svn_docs/leabra/ti/random_struct_2014/rnd_0808_implicit_autosave.proj
+Fri Aug 15 02:21:09 2014: *** LOG: SaveUndo of action: Call Method: Init on: LeabraBatch at path: .programs.gp[0][0] saving at: .
+Fri Aug 15 02:21:10 2014: *** LOG: last_diff_n:  615  pct:  0.00772963
+Fri Aug 15 02:21:11 2014: *** LOG: SaveUndo of action: Call Method: Run_Gui on: LeabraBatch at path: .programs.gp[0][0] saving at: .
+Fri Aug 15 02:21:11 2014: *** LOG: last_diff_n:  320  pct:  0.00402192
