@@ -1,0 +1,1154 @@
+\hypertarget{leabra-in-go-emergent}{%
+\section{Leabra in Go emergent}\label{leabra-in-go-emergent}}
+
+\href{https://goreportcard.com/report/github.com/emer/leabra}{\includegraphics{https://goreportcard.com/badge/github.com/emer/leabra}}
+\href{https://pkg.go.dev/github.com/emer/leabra}{\includegraphics{https://pkg.go.dev/badge/github.com/emer/leabra.svg}}
+\href{https://github.com/emer/leabra/actions/workflows/ci.yml}{\includegraphics{https://github.com/emer/leabra/actions/workflows/ci.yml/badge.svg}}
+\href{https://codecov.io/gh/emer/leabra}{\includegraphics{https://codecov.io/gh/emer/leabra/branch/master/graph/badge.svg?token=Hw5cInAxY3}}
+
+This is the Go implementation of the Leabra algorithm for
+biologically-based models of cognition, based on the
+\href{https://github.com/emer/emergent}{Go emergent} framework (with
+optional Python interface).
+
+See \href{https://github.com/emer/emergent/wiki/Install}{Wiki Install}
+for installation instructions, and the
+\href{https://github.com/emer/emergent/wiki/Rationale}{Wiki Rationale}
+and \href{https://github.com/emer/emergent/wiki/History}{History} pages
+for a more detailed rationale for the new version of emergent, and a
+history of emergent (and its predecessors).
+
+See the
+\href{https://github.com/emer/leabra/blob/master/examples/ra25/README.md}{ra25
+example} for a complete working example (intended to be a good starting
+point for creating your own models), and any of the 26 models in the
+\href{https://github.com/CompCogNeuro/sims}{Comp Cog Neuro sims}
+repository which also provide good starting points. See the
+\href{https://github.com/emer/etable/wiki}{etable wiki} for docs and
+example code for the widely-used etable data table structure, and the
+\texttt{family\_trees} example in the CCN textbook sims which has good
+examples of many standard network representation analysis techniques
+(PCA, cluster plots, RSA).
+
+See
+\href{https://github.com/emer/leabra/blob/master/python/README.md}{python
+README} and \href{https://github.com/emer/emergent/wiki/Python}{Python
+Wiki} for info on using Python to run models.
+
+\hypertarget{current-status--news}{%
+\section{Current Status / News}\label{current-status--news}}
+
+\begin{itemize}
+\item
+  Nov 2020: Full Python conversions of CCN sims complete, and
+  \href{https://github.com/emer/etorch}{eTorch} for viewing and
+  interacting with PyTorch models.
+\item
+  April 2020: GoGi GUI version 1.0 released, and updated install
+  instructions to use go.mod modules for most users.
+\item
+  12/30/2019: Version 1.0.0 Released! -\/-
+  \href{https://github.com/CompCogNeuro/sims}{CCN textbook simulations}
+  are done and \texttt{hip}, \texttt{deep} and \texttt{pbwm} variants
+  are in place and robustly tested.
+\item
+  3/2019: Python interface is up and running! See the \texttt{python}
+  directory in \texttt{leabra} for the
+  \href{https://github.com/emer/leabra/blob/master/python/README.md}{README}
+  status and how to give it a try. You can run the full
+  \texttt{examples/ra25} code using Python, including the GUI etc.
+\end{itemize}
+
+\hypertarget{design}{%
+\section{Design}\label{design}}
+
+\begin{itemize}
+\item
+  \texttt{leabra} sub-package provides a clean, well-organized
+  implementation of core Leabra algorithms and Network structures. More
+  specialized modifications such as \texttt{DeepLeabra} or \texttt{PBWM}
+  or \texttt{PVLV} are all (going to be) implemented as additional
+  specialized code that builds on / replaces elements of the basic
+  version. The goal is to make all of the code simpler, more
+  transparent, and more easily modified by end users. You should not
+  have to dig through deep chains of C++ inheritance to find out what is
+  going on. Nevertheless, the basic tradeoffs of code re-use dictate
+  that not everything should be in-line in one massive blob of code, so
+  there is still some inevitable tracking down of function calls etc.
+  The algorithm overview below should be helpful in finding everything.
+\item
+  \texttt{ActParams} (in
+  \href{https://github.com/emer/leabra/blob/master/leabra/act.go}{act.go}),
+  \texttt{InhibParams} (in
+  \href{https://github.com/emer/leabra/blob/master/leabra/inhib.go}{inhib.go}),
+  and \texttt{LearnNeurParams} / \texttt{LearnSynParams} (in
+  \href{https://github.com/emer/leabra/blob/master/leabra/learn.go}{learn.go})
+  provide the core parameters and functions used, including the
+  X-over-X-plus-1 activation function, FFFB inhibition, and the XCal
+  BCM-like learning rule, etc. This function-based organization should
+  be clearer than the purely structural organization used in C++
+  emergent.
+\item
+  There are 3 main levels of structure: \texttt{Network}, \texttt{Layer}
+  and \texttt{Prjn} (projection). The network calls methods on its
+  Layers, and Layers iterate over both \texttt{Neuron} data structures
+  (which have only a minimal set of methods) and the \texttt{Prjn}s, to
+  implement the relevant computations. The \texttt{Prjn} fully manages
+  everything about a projection of connectivity between two layers,
+  including the full list of \texttt{Syanpse} elements in the
+  connection. There is no "ConGroup" or "ConState" level as was used in
+  C++, which greatly simplifies many things. The Layer also has a set of
+  \texttt{Pool} elements, one for each level at which inhibition is
+  computed (there is always one for the Layer, and then optionally one
+  for each Sub-Pool of units (\emph{Pool} is the new simpler term for
+  "Unit Group" from C++ emergent).
+\item
+  The \texttt{NetworkStru} and \texttt{LayerStru} structs manage all the
+  core structural aspects of things (data structures etc), and then the
+  algorithm-specific versions (e.g., \texttt{leabra.Network}) use Go's
+  anonymous embedding (akin to inheritance in C++) to transparently get
+  all that functionality, while then directly implementing the algorithm
+  code. Almost every step of computation has an associated method in
+  \texttt{leabra.Layer}, so look first in
+  \href{https://github.com/emer/leabra/blob/master/leabra/layer.go}{layer.go}
+  to see how something is implemented.
+\item
+  Each structural element directly has all the parameters controlling
+  its behavior -\/- e.g., the \texttt{Layer} contains an
+  \texttt{ActParams} field (named \texttt{Act}), etc, instead of using a
+  separate \texttt{Spec} structure as in C++ emergent. The Spec-like
+  ability to share parameter settings across multiple layers etc is
+  instead achieved through a \textbf{styling}-based paradigm -\/- you
+  apply parameter "styles" to relevant layers instead of assigning
+  different specs to them. This paradigm should be less confusing and
+  less likely to result in accidental or poorly-understood parameter
+  applications. We adopt the CSS (cascading-style-sheets) standard where
+  parameters can be specifed in terms of the Name of an object (e.g.,
+  \texttt{\#Hidden}), the \emph{Class} of an object (e.g.,
+  \texttt{.TopDown} -\/- where the class name TopDown is manually
+  assigned to relevant elements), and the \emph{Type} of an object
+  (e.g., \texttt{Layer} applies to all layers). Multiple space-separated
+  classes can be assigned to any given element, enabling a powerful
+  combinatorial styling strategy to be used.
+\item
+  Go uses \texttt{interfaces} to represent abstract collections of
+  functionality (i.e., sets of methods). The \texttt{emer} package
+  provides a set of interfaces for each structural level (e.g.,
+  \texttt{emer.Layer} etc) -\/- any given specific layer must implement
+  all of these methods, and the structural containers (e.g., the list of
+  layers in a network) are lists of these interfaces. An interface is
+  implicitly a \emph{pointer} to an actual concrete object that
+  implements the interface. Thus, we typically need to convert this
+  interface into the pointer to the actual concrete type, as in:
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{func} \OperatorTok{(}\NormalTok{nt }\OperatorTok{*}\NormalTok{Network}\OperatorTok{)}\NormalTok{ InitActs}\OperatorTok{()} \OperatorTok{\{}
+    \KeywordTok{for}\NormalTok{ \_}\OperatorTok{,}\NormalTok{ ly }\OperatorTok{:=} \KeywordTok{range}\NormalTok{ nt}\OperatorTok{.}\NormalTok{Layers }\OperatorTok{\{}
+        \KeywordTok{if}\NormalTok{ ly}\OperatorTok{.}\NormalTok{IsOff}\OperatorTok{()} \OperatorTok{\{}
+            \KeywordTok{continue}
+        \OperatorTok{\}}
+\NormalTok{        ly}\OperatorTok{.(*}\NormalTok{Layer}\OperatorTok{).}\NormalTok{InitActs}\OperatorTok{()} \CommentTok{// ly is the emer.Layer interface {-}{-} (*Layer) converts to leabra.Layer}
+    \OperatorTok{\}}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\item
+  The emer interfaces are designed to support generic access to network
+  state, e.g., for the 3D network viewer, but specifically avoid
+  anything algorithmic. Thus, they should allow viewing of any kind of
+  network, including PyTorch backprop nets.
+\item
+  There is also a \texttt{leabra.LeabraLayer} and
+  \texttt{leabra.LeabraPrjn} interface, defined in
+  \href{https://github.com/emer/leabra/blob/master/leabra/leabra.go}{leabra.go},
+  which provides a virtual interface for the Leabra-specific algorithm
+  functions at the basic level. These interfaces are used in the base
+  leabra code, so that any more specialized version that embeds the
+  basic leabra types will be called instead. See \texttt{deep}
+  sub-package for implemented example that does DeepLeabra on top of the
+  basic \texttt{leabra} foundation.
+\item
+  Layers have a \texttt{Shape} property, using the
+  \texttt{etensor.Shape} type, which specifies their n-dimensional
+  (tensor) shape. Standard layers are expected to use a 2D Y*X shape
+  (note: dimension order is now outer-to-inner or \emph{RowMajor} now),
+  and a 4D shape then enables \texttt{Pools} ("unit groups") as
+  hypercolumn-like structures within a layer that can have their own
+  local level of inihbition, and are also used extensively for
+  organizing patterns of connectivity.
+\end{itemize}
+
+\hypertarget{naming-conventions}{%
+\section{Naming Conventions}\label{naming-conventions}}
+
+There are several changes from the original C++ emergent implementation
+for how things are named now:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{Pool\ \textless{}-\ Unit\_Group} -\/- A group of Neurons that
+  share pooled inhibition. Can be entire layer and / or sub-pools within
+  a layer.
+\item
+  \texttt{AlphaCyc\ \textless{}-\ Trial} -\/- We are now distinguishing
+  more clearly between network-level timing units (e.g., the 100 msec
+  alpha cycle over which learning operates within posterior cortex) and
+  environmental or experimental timing units, e.g., the \texttt{Trial}
+  etc. Please see the
+  \href{https://godoc.org/github.com/emer/leabra/leabra\#TimeScales}{TimeScales}
+  type for an attempt to standardize the different units of time along
+  these different dimensions. The \texttt{examples/ra25} example uses
+  trials and epochs for controlling the "environment" (such as it is),
+  while the algorithm-specific code refers to AlphaCyc, Quarter, and
+  Cycle, which are the only time scales that are specifically coded
+  within the algorithm -\/- everything else is up to the specific model
+  code.
+\end{itemize}
+
+\hypertarget{the-leabra-algorithm}{%
+\section{The Leabra Algorithm}\label{the-leabra-algorithm}}
+
+Leabra stands for \emph{Local, Error-driven and Associative,
+Biologically Realistic Algorithm}, and it implements a balance between
+error-driven (backpropagation) and associative (Hebbian) learning on top
+of a biologically-based point-neuron activation function with inhibitory
+competition dynamics (either via inhibitory interneurons or an
+approximation thereof), which produce k-Winners-Take-All (kWTA) sparse
+distributed representations. Extensive documentation is available from
+the online textbook: \href{https://CompCogNeuro.org}{Computational
+Cognitive Neuroscience} which serves as a second edition to the original
+book: \emph{Computational Explorations in Cognitive Neuroscience:
+Understanding the Mind by Simulating the Brain}, O'Reilly and Munakata,
+2000, Cambridge, MA: MIT Press.
+\href{http://psych.colorado.edu/~oreilly/comp_ex_cog_neuro.html}{Computational
+Explorations..}
+
+The name is pronounced like "Libra" and is intended to connote the
+\emph{balance} of various different factors in an attempt to approach
+the "golden middle" ground between biological realism and computational
+efficiency and the ability to simulate complex cognitive function.
+
+The version of Leabra implemented here corresponds to version 8.5 of
+\href{https://github.com/emer/cemer}{C++ emergent (cemer)}.
+
+The basic activation dynamics of Leabra are based on standard
+electrophysiological principles of real neurons, and in discrete spiking
+mode we implement exactly the AdEx (adapting exponential) model of
+Gerstner and colleagues
+\href{https://www.scholarpedia.org/article/Adaptive_exponential_integrate-and-fire_model}{Scholarpedia
+article on AdEx}. The basic \texttt{leabra} package implements the rate
+code mode (which runs faster and allows for smaller networks), which
+provides a very close approximation to the AdEx model behavior, in terms
+of a graded activation signal matching the actual instantaneous rate of
+spiking across a population of AdEx neurons. We generally conceive of a
+single rate-code neuron as representing a microcolumn of roughly 100
+spiking pyramidal neurons in the neocortex. Conversion factors from
+biological units from AdEx to normalized units used in Leabra are in
+this
+\href{https://docs.google.com/spreadsheets/d/1jn-NcXY4-y3pOw6inFOgPYlaQodrGIjcsAWkiD9f1FQ/edit?usp=sharing}{google
+sheet}.
+
+The excitatory synaptic input conductance (\texttt{Ge} in the code,
+known as \emph{net input} in artificial neural networks) is computed as
+an average, not a sum, over connections, based on normalized, sigmoidaly
+transformed weight values, which are subject to scaling on a projection
+level to alter relative contributions. Automatic scaling is performed to
+compensate for differences in expected activity level in the different
+projections. See section on \protect\hyperlink{input-scaling}{Input
+Scaling} for details.
+
+Inhibition is computed using a feed-forward (FF) and feed-back (FB)
+inhibition function (\emph{FFFB}) that closely approximates the behavior
+of inhibitory interneurons in the neocortex. FF is based on a
+multiplicative factor applied to the average excitatory net input coming
+into a layer, and FB is based on a multiplicative factor applied to the
+average activation within the layer. These simple linear functions do an
+excellent job of controlling the overall activation levels in
+bidirectionally connected networks, producing behavior very similar to
+the more abstract computational implementation of kWTA dynamics
+implemented in previous versions.
+
+There is a single learning equation, derived from a very detailed model
+of spike timing dependent plasticity (STDP) by Urakubo, Honda, Froemke,
+et al (2008), that produces a combination of Hebbian associative and
+error-driven learning. For historical reasons, we call this the
+\emph{XCAL} equation (\emph{eXtended Contrastive Attractor Learning}),
+and it is functionally very similar to the \emph{BCM} learning rule
+developed by Bienenstock, Cooper, and Munro (1982). The essential
+learning dynamic involves a Hebbian-like co-product of sending neuron
+activation times receiving neuron activation, which biologically
+reflects the amount of calcium entering through NMDA channels, and this
+co-product is then compared against a floating threshold value. To
+produce the Hebbian learning dynamic, this floating threshold is based
+on a longer-term running average of the receiving neuron activation
+(\texttt{AvgL} in the code). This is the key idea for the BCM algorithm.
+To produce error-driven learning, the floating threshold is based on a
+faster running average of activation co-products (\texttt{AvgM}), which
+reflects an expectation or prediction, against which the instantaneous,
+later outcome is compared.
+
+Weights are subject to a contrast enhancement function, which
+compensates for the soft (exponential) weight bounding that keeps
+weights within the normalized 0-1 range. Contrast enhancement is
+important for enhancing the selectivity of self-organizing learning, and
+generally results in faster learning with better overall results.
+Learning operates on the underlying internal linear weight value.
+Biologically, we associate the underlying linear weight value with
+internal synaptic factors such as actin scaffolding, CaMKII
+phosphorlation level, etc, while the contrast enhancement operates at
+the level of AMPA receptor expression.
+
+There are various extensions to the algorithm that implement special
+neural mechanisms associated with the prefrontal cortex and basal
+ganglia \protect\hyperlink{pbwm}{PBWM}, dopamine systems
+\protect\hyperlink{pvlv}{PVLV}, the
+\protect\hyperlink{hippocampus}{Hippocampus}, and predictive learning
+and temporal integration dynamics associated with the thalamocortical
+circuits \protect\hyperlink{deepleabra}{DeepLeabra}. All of these are
+(will be) implemented as additional modifications of the core, simple
+\texttt{leabra} implementation, instead of having everything rolled into
+one giant hairball as in the original C++ implementation.
+
+\hypertarget{pseudocode-as-a-latex-doc-for-paper-appendix}{%
+\section{Pseudocode as a LaTeX doc for Paper
+Appendix}\label{pseudocode-as-a-latex-doc-for-paper-appendix}}
+
+You can copy the mediawiki source of the following section into a file,
+and run \href{https://pandoc.org/}{pandoc} on it to convert to LaTeX (or
+other formats) for inclusion in a paper. As this wiki page is always
+kept updated, it is best to regenerate from this source -\/- very easy:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{curl} \StringTok{"https://raw.githubusercontent.com/emer/leabra/master/README.md"} \AttributeTok{{-}o}\NormalTok{ appendix.md}
+\ExtensionTok{pandoc}\NormalTok{ appendix.md }\AttributeTok{{-}f}\NormalTok{ gfm }\AttributeTok{{-}t}\NormalTok{ latex }\AttributeTok{{-}o}\NormalTok{ appendix.tex}
+\end{Highlighting}
+\end{Shaded}
+
+You can then edit the resulting .tex file to only include the parts you
+want, etc.
+
+\hypertarget{leabra-algorithm-equations}{%
+\section{Leabra Algorithm Equations}\label{leabra-algorithm-equations}}
+
+The pseudocode for Leabra is given here, showing exactly how the pieces
+of the algorithm fit together, using the equations and variables from
+the actual code. Compared to the original C++ emergent implementation,
+this Go version of emergent is much more readable, while also not being
+too much slower overall.
+
+There are also other implementations of Leabra available:
+
+\begin{itemize}
+\tightlist
+\item
+  \href{https://github.com/PrincetonUniversity/leabra7}{leabra7} Python
+  implementation of the version 7 of Leabra, by Daniel Greenidge and Ken
+  Norman at Princeton.
+\item
+  \href{https://github.com/emer/cemer/blob/master/Matlab/}{Matlab} (link
+  into the cemer C++ emergent source tree) -\/- a complete
+  implementation of these equations in Matlab, coded by Sergio
+  Verduzco-Flores.
+\item
+  \href{https://github.com/benureau/leabra}{Python} implementation by
+  Fabien Benureau.
+\item
+  \href{https://github.com/johannes-titz/leabRa}{R} implementation by
+  Johannes Titz.
+\end{itemize}
+
+This repository contains specialized additions to the core algorithm
+described here:
+
+\begin{itemize}
+\tightlist
+\item
+  \href{https://github.com/emer/leabra/blob/master/deep}{deep} has the
+  DeepLeabra mechanisms for simulating the deep neocortical
+  \textless-\textgreater{} thalamus pathways (wherein basic Leabra
+  represents purely superficial-layer processing)
+\item
+  \href{https://github.com/emer/leabra/blob/master/rl}{pbwm} has basic
+  reinforcement learning models such as Rescorla-Wagner and TD (temporal
+  differences).
+\item
+  \href{https://github.com/emer/leabra/blob/master/pbwm1}{pbwm} has the
+  prefrontal-cortex basal ganglia working memory model (PBWM).
+\item
+  \href{https://github.com/emer/leabra/blob/master/hip}{hip} has the
+  hippocampus specific learning mechanisms.
+\end{itemize}
+
+\hypertarget{timing}{%
+\subsection{Timing}\label{timing}}
+
+Leabra is organized around the following timing, based on an
+internally-generated alpha-frequency (10 Hz, 100 msec periods) cycle of
+expectation followed by outcome, supported by neocortical circuitry in
+the deep layers and the thalamus, as hypothesized in the
+\protect\hyperlink{deepleabra}{DeepLeabra} extension to standard Leabra:
+
+\begin{itemize}
+\item
+  A \textbf{Trial} lasts 100 msec (10 Hz, alpha frequency), and
+  comprises one sequence of expectation -\/- outcome learning, organized
+  into 4 quarters.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Biologically, the deep neocortical layers (layers 5, 6) and the
+    thalamus have a natural oscillatory rhythm at the alpha frequency.
+    Specific dynamics in these layers organize the cycle of expectation
+    vs. outcome within the alpha cycle.
+  \end{itemize}
+\item
+  A \textbf{Quarter} lasts 25 msec (40 Hz, gamma frequency) -\/- the
+  first 3 quarters (75 msec) form the expectation / minus phase, and the
+  final quarter are the outcome / plus phase.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Biologically, the superficial neocortical layers (layers 2, 3) have
+    a gamma frequency oscillation, supporting the quarter-level
+    organization.
+  \end{itemize}
+\item
+  A \textbf{Cycle} represents 1 msec of processing, where each neuron
+  updates its membrane potential etc according to the above equations.
+\end{itemize}
+
+\hypertarget{variables}{%
+\subsection{Variables}\label{variables}}
+
+The \texttt{leabra.Neuron} struct contains all the neuron (unit) level
+variables, and the \texttt{leabra.Layer} contains a simple Go slice of
+these variables. Optionally, there can be \texttt{leabra.Pool} pools of
+subsets of neurons that correspond to hypercolumns, and support more
+local inhibitory dynamics (these used to be called UnitGroups in the C++
+version).
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{Act} = overall rate coded activation value -\/- what is sent
+  to other neurons -\/- typically in range 0-1
+\item
+  \texttt{Ge} = total excitatory synaptic conductance -\/- the net
+  excitatory input to the neuron -\/- does \emph{not} include Gbar.E
+\item
+  \texttt{Gi} = total inhibitory synaptic conductance -\/- the net
+  inhibitory input to the neuron -\/- does \emph{not} include Gbar.I
+\item
+  \texttt{Inet} = net current produced by all channels -\/- drives
+  update of Vm
+\item
+  \texttt{Vm} = membrane potential -\/- integrates Inet current over
+  time
+\item
+  \texttt{Targ} = target value: drives learning to produce this
+  activation value
+\item
+  \texttt{Ext} = external input: drives activation of unit from outside
+  influences (e.g., sensory input)
+\item
+  \texttt{AvgSS} = super-short time-scale activation average -\/-
+  provides the lowest-level time integration -\/- for spiking this
+  integrates over spikes before subsequent averaging, and it is also
+  useful for rate-code to provide a longer time integral overall
+\item
+  \texttt{AvgS} = short time-scale activation average -\/- tracks the
+  most recent activation states (integrates over AvgSS values), and
+  represents the plus phase for learning in XCAL algorithms
+\item
+  \texttt{AvgM} = medium time-scale activation average -\/- integrates
+  over AvgS values, and represents the minus phase for learning in XCAL
+  algorithms
+\item
+  \texttt{AvgL} = long time-scale average of medium-time scale (trial
+  level) activation, used for the BCM-style floating threshold in XCAL
+\item
+  \texttt{AvgLLrn} = how much to learn based on the long-term floating
+  threshold (AvgL) for BCM-style Hebbian learning -\/- is modulated by
+  level of AvgL itself (stronger Hebbian as average activation goes
+  higher) and optionally the average amount of error experienced in the
+  layer (to retain a common proportionality with the level of
+  error-driven learning across layers)
+\item
+  \texttt{AvgSLrn} = short time-scale activation average that is
+  actually used for learning -\/- typically includes a small
+  contribution from AvgM in addition to mostly AvgS, as determined by
+  \texttt{LrnActAvgParams.LrnM} -\/- important to ensure that when unit
+  turns off in plus phase (short time scale), enough medium-phase trace
+  remains so that learning signal doesn't just go all the way to 0, at
+  which point no learning would take place
+\item
+  \texttt{ActM} = records the traditional posterior-cortical minus phase
+  activation, as activation after third quarter of current alpha cycle
+\item
+  \texttt{ActP} = records the traditional posterior-cortical plus\_phase
+  activation, as activation at end of current alpha cycle
+\item
+  \texttt{ActDif} = ActP - ActM -\/- difference between plus and minus
+  phase acts -\/- reflects the individual error gradient for this neuron
+  in standard error-driven learning terms
+\item
+  \texttt{ActDel} delta activation: change in Act from one cycle to next
+  -\/- can be useful to track where changes are taking place
+\item
+  \texttt{ActAvg} = average activation (of final plus phase activation
+  state) over long time intervals (time constant = DtPars.AvgTau -\/-
+  typically 200) -\/- useful for finding hog units and seeing overall
+  distribution of activation
+\item
+  \texttt{Noise} = noise value added to unit (\texttt{ActNoiseParams}
+  determines distribution, and when / where it is added)
+\item
+  \texttt{GiSyn} = aggregated synaptic inhibition (from Inhib
+  projections) -\/- time integral of GiRaw -\/- this is added with
+  computed FFFB inhibition to get the full inhibition in Gi
+\item
+  \texttt{GiSelf} = total amount of self-inhibition -\/- time-integrated
+  to avoid oscillations
+\end{itemize}
+
+The following are more implementation-level variables used in
+integrating synaptic inputs:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{ActSent} = last activation value sent (only send when diff is
+  over threshold)
+\item
+  \texttt{GeRaw} = raw excitatory conductance (net input) received from
+  sending units (send delta's are added to this value)
+\item
+  \texttt{GeInc} = delta increment in GeRaw sent using SendGeDelta
+\item
+  \texttt{GiRaw} = raw inhibitory conductance (net input) received from
+  sending units (send delta's are added to this value)
+\item
+  \texttt{GiInc} = delta increment in GiRaw sent using SendGeDelta
+\end{itemize}
+
+Neurons are connected via synapses parameterized with the following
+variables, contained in the \texttt{leabra.Synapse} struct. The
+\texttt{leabra.Prjn} contains all of the synaptic connections for all
+the neurons across a given layer -\/- there are no Neuron-level data
+structures in the Go version.
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{Wt} = synaptic weight value -\/- sigmoid contrast-enhanced
+\item
+  \texttt{LWt} = linear (underlying) weight value -\/- learns according
+  to the lrate specified in the connection spec -\/- this is converted
+  into the effective weight value, Wt, via sigmoidal contrast
+  enhancement (see \texttt{WtSigParams})
+\item
+  \texttt{DWt} = change in synaptic weight, from learning
+\item
+  \texttt{Norm} = DWt normalization factor -\/- reset to max of abs
+  value of DWt, decays slowly down over time -\/- serves as an estimate
+  of variance in weight changes over time
+\item
+  \texttt{Moment} = momentum -\/- time-integrated DWt changes, to
+  accumulate a consistent direction of weight change and cancel out
+  dithering contradictory changes
+\end{itemize}
+
+\hypertarget{activation-update-cycle-every-1-msec-ge-gi-act}{%
+\subsection{Activation Update Cycle (every 1 msec): Ge, Gi,
+Act}\label{activation-update-cycle-every-1-msec-ge-gi-act}}
+
+The \texttt{leabra.Network} \texttt{Cycle} method in
+\texttt{leabra/network.go} looks like this:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{// Cycle runs one cycle of activation updating:}
+\CommentTok{// * Sends Ge increments from sending to receiving layers}
+\CommentTok{// * Average and Max Ge stats}
+\CommentTok{// * Inhibition based on Ge stats and Act Stats (computed at end of Cycle)}
+\CommentTok{// * Activation from Ge, Gi, and Gl}
+\CommentTok{// * Average and Max Act stats}
+\CommentTok{// This basic version doesn\textquotesingle{}t use the time info, but more specialized types do, and we}
+\CommentTok{// want to keep a consistent API for end{-}user code.}
+\KeywordTok{func} \OperatorTok{(}\NormalTok{nt }\OperatorTok{*}\NormalTok{Network}\OperatorTok{)}\NormalTok{ Cycle}\OperatorTok{(}\NormalTok{ltime }\OperatorTok{*}\NormalTok{Time}\OperatorTok{)} \OperatorTok{\{}
+\NormalTok{    nt}\OperatorTok{.}\NormalTok{SendGDelta}\OperatorTok{(}\NormalTok{ltime}\OperatorTok{)} \CommentTok{// also does integ}
+\NormalTok{    nt}\OperatorTok{.}\NormalTok{AvgMaxGe}\OperatorTok{(}\NormalTok{ltime}\OperatorTok{)}
+\NormalTok{    nt}\OperatorTok{.}\NormalTok{InhibFmGeAct}\OperatorTok{(}\NormalTok{ltime}\OperatorTok{)}
+\NormalTok{    nt}\OperatorTok{.}\NormalTok{ActFmG}\OperatorTok{(}\NormalTok{ltime}\OperatorTok{)}
+\NormalTok{    nt}\OperatorTok{.}\NormalTok{AvgMaxAct}\OperatorTok{(}\NormalTok{ltime}\OperatorTok{)}
+\OperatorTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+For every cycle of activation updating, we compute the excitatory input
+conductance \texttt{Ge}, then compute inhibition \texttt{Gi} based on
+average \texttt{Ge} and \texttt{Act} (from previous cycle), then compute
+the \texttt{Act} based on those conductances. The equations below are
+not shown in computational order but rather conceptual order for greater
+clarity. All of the relevant parameters are in the
+\texttt{leabra.Layer.Act} and \texttt{Inhib} fields, which are of type
+\texttt{ActParams} and \texttt{InhibParams} -\/- in this Go version, the
+parameters have been organized functionally, not structurally, into
+three categories.
+
+\begin{itemize}
+\item
+  \texttt{Ge} excitatory conductance is actually computed using a highly
+  efficient delta-sender-activation based algorithm, which only does the
+  expensive multiplication of activations * weights when the sending
+  activation changes by a given amount (\texttt{OptThreshParams.Delta}).
+  However, conceptually, the conductance is given by this equation:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{GeRaw\ +=\ Sum\_(recv)\ Prjn.GScale\ *\ Send.Act\ *\ Wt}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      \texttt{Prjn.GScale} is the
+      \protect\hyperlink{input-scaling}{Input Scaling} factor that
+      includes 1/N to compute an average, and the \texttt{WtScaleParams}
+      \texttt{Abs} absolute scaling and \texttt{Rel} relative scaling,
+      which allow one to easily modulate the overall strength of
+      different input projections.
+    \end{itemize}
+  \item
+    \texttt{Ge\ +=\ DtParams.Integ\ *\ (1/\ DtParams.GTau)\ *\ (GeRaw\ -\ Ge)}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      This does a time integration of excitatory conductance,
+      \texttt{GTau\ =\ 1.4} default, and global integration time
+      constant, \texttt{Integ\ =\ 1} for 1 msec default.
+    \end{itemize}
+  \end{itemize}
+\item
+  \texttt{Gi} inhibtory conductance combines computed and synaptic-level
+  inhibition (if present) -\/- most of code is in
+  \texttt{leabra/inhib.go}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{ffNetin\ =\ avgGe\ +\ FFFBParams.MaxVsAvg\ *\ (maxGe\ -\ avgGe)}
+  \item
+    \texttt{ffi\ =\ FFFBParams.FF\ *\ MAX(ffNetin\ -\ FFBParams.FF0,\ 0)}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      feedforward component of inhibition with FF multiplier (1 by
+      default) -\/- has FF0 offset and can't be negative (that's what
+      the MAX(.. ,0) part does).
+    \item
+      \texttt{avgGe} is average of Ge variable across relevant Pool of
+      neurons, depending on what level this is being computed at, and
+      \texttt{maxGe} is max of Ge across Pool
+    \end{itemize}
+  \item
+    \texttt{fbi\ +=\ (1\ /\ FFFBParams.FBTau)\ *\ (FFFBParams.FB\ *\ avgAct\ -\ fbi}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      feedback component of inhibition with FB multiplier (1 by default)
+      -\/- requires time integration to dampen oscillations that
+      otherwise occur -\/- FBTau = 1.4 default.
+    \end{itemize}
+  \item
+    \texttt{Gi\ =\ FFFBParams.Gi\ *\ (ffi\ +\ fbi)}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      total inhibitory conductance, with global Gi multiplier -\/-
+      default of 1.8 typically produces good sparse distributed
+      representations in reasonably large layers (25 units or more).
+    \end{itemize}
+  \end{itemize}
+\item
+  \texttt{Act} activation from Ge, Gi, Gl (most of code is in
+  \texttt{leabra/act.go}, e.g., \texttt{ActParams.ActFmG} method). When
+  neurons are above thresholds in subsequent condition, they obey the
+  "geLin" function which is linear in Ge:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{geThr\ =\ (Gi\ *\ (Erev.I\ -\ Thr)\ +\ Gbar.L\ *\ (Erev.L\ -\ Thr)\ /\ (Thr\ -\ Erev.E)}
+  \item
+    \texttt{nwAct\ =\ NoisyXX1(Ge\ *\ Gbar.E\ -\ geThr)}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      geThr = amount of excitatory conductance required to put the
+      neuron exactly at the firing threshold, \texttt{XX1Params.Thr} =
+      .5 default, and NoisyXX1 is the x / (x+1) function convolved with
+      gaussian noise kernel, where x = \texttt{XX1Parms.Gain} * Ge -
+      geThr) and Gain is 100 by default
+    \end{itemize}
+  \item
+    \texttt{if\ Act\ \textless{}\ XX1Params.VmActThr\ \&\&\ Vm\ \textless{}=\ X11Params.Thr:\ nwAct\ =\ NoisyXX1(Vm\ -\ Thr)}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      it is important that the time to first "spike" (above-threshold
+      activation) be governed by membrane potential Vm integration
+      dynamics, but after that point, it is essential that activation
+      drive directly from the excitatory conductance Ge relative to the
+      geThr threshold.
+    \end{itemize}
+  \item
+    \texttt{Act\ +=\ (1\ /\ DTParams.VmTau)\ *\ (nwAct\ -\ Act)}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      time-integration of the activation, using same time constant as Vm
+      integration (VmTau = 3.3 default)
+    \end{itemize}
+  \item
+    \texttt{Vm\ +=\ (1\ /\ DTParams.VmTau)\ *\ Inet}
+  \item
+    \texttt{Inet\ =\ Ge\ *\ (Erev.E\ -\ Vm)\ +\ Gbar.L\ *\ (Erev.L\ -\ Vm)\ +\ Gi\ *\ (Erev.I\ -\ Vm)\ +\ Noise}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Membrane potential computed from net current via standard RC model
+      of membrane potential integration. In practice we use normalized
+      Erev reversal potentials and Gbar max conductances, derived from
+      biophysical values: Erev.E = 1, .L = 0.3, .I = 0.25, Gbar's are
+      all 1 except Gbar.L = .2 default.
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\hypertarget{learning}{%
+\subsection{Learning}\label{learning}}
+
+\includegraphics{fig_xcal_dwt_fun.png?raw=true}
+
+Learning is based on running-averages of activation variables,
+parameterized in the \texttt{leabra.Layer.Learn} \texttt{LearnParams}
+field, mostly implemented in the \texttt{leabra/learn.go} file.
+
+\begin{itemize}
+\item
+  \textbf{Running averages} computed continuously every cycle, and note
+  the compounding form. Tau params in \texttt{LrnActAvgParams}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{AvgSS\ +=\ (1\ /\ SSTau)\ *\ (Act\ -\ AvgSS)}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      super-short time scale running average, SSTau = 2 default -\/-
+      this was introduced to smooth out discrete spiking signal, but is
+      also useful for rate code.
+    \end{itemize}
+  \item
+    \texttt{AvgS\ +=\ (1\ /\ STau)\ *\ (AvgSS\ -\ AvgS)}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      short time scale running average, STau = 2 default -\/- this
+      represents the \emph{plus phase} or actual outcome signal in
+      comparison to AvgM
+    \end{itemize}
+  \item
+    \texttt{AvgM\ +=\ (1\ /\ MTau)\ *\ (AvgS\ -\ AvgM)}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      medium time-scale running average, MTau = 10 -\/- this represents
+      the \emph{minus phase} or expectation signal in comparison to AvgS
+    \end{itemize}
+  \item
+    \texttt{AvgL\ +=\ (1\ /\ Tau)\ *\ (Gain\ *\ AvgM\ -\ AvgL);\ AvgL\ =\ MAX(AvgL,\ Min)}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      long-term running average -\/- this is computed just once per
+      learning trial, \emph{not every cycle} like the ones above -\/-
+      params on \texttt{AvgLParams}: Tau = 10, Gain = 2.5 (this is a key
+      param -\/- best value can be lower or higher) Min = .2
+    \end{itemize}
+  \item
+    \texttt{AvgLLrn\ =\ ((Max\ -\ Min)\ /\ (Gain\ -\ Min))\ *\ (AvgL\ -\ Min)}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      learning strength factor for how much to learn based on AvgL
+      floating threshold -\/- this is dynamically modulated by strength
+      of AvgL itself, and this turns out to be critical -\/- the amount
+      of this learning increases as units are more consistently active
+      all the time (i.e., "hog" units). Params on \texttt{AvgLParams},
+      Min = 0.0001, Max = 0.5. Note that this depends on having a clear
+      max to AvgL, which is an advantage of the exponential
+      running-average form above.
+    \end{itemize}
+  \item
+    \texttt{AvgLLrn\ *=\ MAX(1\ -\ layCosDiffAvg,\ ModMin)}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      also modulate by time-averaged cosine (normalized dot product)
+      between minus and plus phase activation states in given receiving
+      layer (layCosDiffAvg), (time constant 100) -\/- if error signals
+      are small in a given layer, then Hebbian learning should also be
+      relatively weak so that it doesn't overpower it -\/- and
+      conversely, layers with higher levels of error signals can handle
+      (and benefit from) more Hebbian learning. The MAX(ModMin) (ModMin
+      = .01) factor ensures that there is a minimum level of .01 Hebbian
+      (multiplying the previously-computed factor above). The .01 * .05
+      factors give an upper-level value of .0005 to use for a fixed
+      constant AvgLLrn value -\/- just slightly less than this (.0004)
+      seems to work best if not using these adaptive factors.
+    \end{itemize}
+  \item
+    \texttt{AvgSLrn\ =\ (1-LrnM)\ *\ AvgS\ +\ LrnM\ *\ AvgM}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      mix in some of the medium-term factor into the short-term factor
+      -\/- this is important for ensuring that when neuron turns off in
+      the plus phase (short term), that enough trace of earlier
+      minus-phase activation remains to drive it into the LTD weight
+      decrease region -\/- LrnM = .1 default.
+    \end{itemize}
+  \end{itemize}
+\item
+  \textbf{Learning equation}:
+
+  \begin{itemize}
+  \item
+    \texttt{srs\ =\ Send.AvgSLrn\ *\ Recv.AvgSLrn}
+  \item
+    \texttt{srm\ =\ Send.AvgM\ *\ Recv.AvgM}
+  \item
+    \texttt{dwt\ =\ XCAL(srs,\ srm)\ +\ Recv.AvgLLrn\ *\ XCAL(srs,\ Recv.AvgL)}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      weight change is sum of two factors: error-driven based on
+      medium-term threshold (srm), and BCM Hebbian based on long-term
+      threshold of the recv unit (Recv.AvgL)
+    \end{itemize}
+  \item
+    XCAL is the "check mark" linearized BCM-style learning function (see
+    figure) that was derived from the Urakubo Et Al (2008) STDP model,
+    as described in more detail in the
+    \href{https://CompCogNeuro.org}{CCN textbook}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      \texttt{XCAL(x,\ th)\ =\ (x\ \textless{}\ DThr)\ ?\ 0\ :\ (x\ \textgreater{}\ th\ *\ DRev)\ ?\ (x\ -\ th)\ :\ (-x\ *\ ((1-DRev)/DRev))}
+    \item
+      DThr = 0.0001, DRev = 0.1 defaults, and x ? y : z terminology is C
+      syntax for: if x is true, then y, else z
+    \end{itemize}
+  \item
+    \textbf{DWtNorm} -\/- normalizing the DWt weight changes is standard
+    in current backprop, using the AdamMax version of the original RMS
+    normalization idea, and benefits Leabra as well, and is On by
+    default, params on \texttt{DwtNormParams}:
+
+    \begin{itemize}
+    \tightlist
+    \item
+      \texttt{Norm\ =\ MAX((1\ -\ (1\ /\ DecayTau))\ *\ Norm,\ ABS(dwt))}
+
+      \begin{itemize}
+      \tightlist
+      \item
+        increment the Norm normalization using abs (L1 norm) instead of
+        squaring (L2 norm), and with a small amount of decay: DecayTau =
+        1000.
+      \end{itemize}
+    \item
+      \texttt{dwt\ *=\ LrComp\ /\ MAX(Norm,\ NormMin)}
+
+      \begin{itemize}
+      \tightlist
+      \item
+        normalize dwt weight change by the normalization factor, but
+        with a minimum to prevent dividing by 0 -\/- LrComp compensates
+        overall learning rate for this normalization (.15 default) so a
+        consistent learning rate can be used, and NormMin = .001
+        default.
+      \end{itemize}
+    \end{itemize}
+  \item
+    \textbf{Momentum} -\/- momentum is turned On by default, and has
+    significant benefits for preventing hog units by driving more rapid
+    specialization and convergence on promising error gradients.
+    Parameters on \texttt{MomentumParams}:
+
+    \begin{itemize}
+    \tightlist
+    \item
+      \texttt{Moment\ =\ (1\ -\ (1\ /\ MTau))\ *\ Moment\ +\ dwt}
+    \item
+      \texttt{dwt\ =\ LrComp\ *\ Moment}
+
+      \begin{itemize}
+      \tightlist
+      \item
+        increment momentum from new weight change, MTau = 10,
+        corresponding to standard .9 momentum factor (sometimes 20 = .95
+        is better), with LrComp = .1 comp compensating for increased
+        effective learning rate.
+      \end{itemize}
+    \end{itemize}
+  \item
+    \texttt{DWt\ =\ Lrate\ *\ dwt}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      final effective weight change includes overall learning rate
+      multiplier. For learning rate schedules, just directly manipulate
+      the learning rate parameter -\/- not using any kind of builtin
+      schedule mechanism.
+    \end{itemize}
+  \end{itemize}
+\item
+  \textbf{Weight Balance} -\/- this option (off by default but
+  recommended for larger models) attempts to maintain more balanced
+  weights across units, to prevent some units from hogging the
+  representational space, by changing the rates of weight increase and
+  decrease in the soft weight bounding function, as a function of the
+  average receiving weights. All params in \texttt{WtBalParams}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{if\ (Wb.Avg\ \textless{}\ LoThr):\ Wb.Fact\ =\ LoGain\ *\ (LoThr\ -\ MAX(Wb.Avg,\ AvgThr));\ Wb.Dec\ =\ 1\ /\ (1\ +\ Wb.Fact);\ Wb.Inc\ =\ 2\ -\ Wb.Dec}
+  \item
+    \texttt{else:\ Wb.Fact\ =\ HiGain\ *\ (Wb.Avg\ -\ HiThr);\ Wb.Inc\ =\ 1\ /\ (1\ +\ Wb.Fact);\ Wb.Dec\ =\ 2\ -\ Wb.Inc}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      \texttt{Wb} is the \texttt{WtBalRecvPrjn} structure stored on the
+      \texttt{leabra.Prjn}, per each Recv neuron. \texttt{Wb.Avg} =
+      average of recv weights (computed separately and only every N = 10
+      weight updates, to minimize computational cost). If this average
+      is relatively low (compared to LoThr = .4) then there is a bias to
+      increase more than decrease, in proportion to how much below this
+      threshold they are (LoGain = 6). If the average is relatively high
+      (compared to HiThr = .4), then decreases are stronger than
+      increases, HiGain = 4.
+    \end{itemize}
+  \item
+    A key feature of this mechanism is that it does not change the sign
+    of any weight changes, including not causing weights to change that
+    are otherwise not changing due to the learning rule. This is not
+    true of an alternative mechanism that has been used in various
+    models, which normalizes the total weight value by subtracting the
+    average. Overall this weight balance mechanism is important for
+    larger networks on harder tasks, where the hogging problem can be a
+    significant problem.
+  \end{itemize}
+\item
+  \textbf{Weight update equation}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    The \texttt{LWt} value is the linear, non-contrast enhanced version
+    of the weight value, and \texttt{Wt} is the sigmoidal
+    contrast-enhanced version, which is used for sending netinput to
+    other neurons. One can compute LWt from Wt and vice-versa, but
+    numerical errors can accumulate in going back-and forth more than
+    necessary, and it is generally faster to just store these two weight
+    values.
+  \item
+    \texttt{DWt\ *=\ (DWt\ \textgreater{}\ 0)\ ?\ Wb.Inc\ *\ (1-LWt)\ :\ Wb.Dec\ *\ LWt}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      soft weight bounding -\/- weight increases exponentially
+      decelerate toward upper bound of 1, and decreases toward lower
+      bound of 0, based on linear, non-contrast enhanced LWt weights.
+      The \texttt{Wb} factors are how the weight balance term shift the
+      overall magnitude of weight increases and decreases.
+    \end{itemize}
+  \item
+    \texttt{LWt\ +=\ DWt}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      increment the linear weights with the bounded DWt term
+    \end{itemize}
+  \item
+    \texttt{Wt\ =\ SIG(LWt)}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      new weight value is sigmoidal contrast enhanced version of linear
+      weight
+    \item
+      \texttt{SIG(w)\ =\ 1\ /\ (1\ +\ (Off\ *\ (1-w)/w)\^{}Gain)}
+    \end{itemize}
+  \item
+    \texttt{DWt\ =\ 0}
+
+    \begin{itemize}
+    \tightlist
+    \item
+      reset weight changes now that they have been applied.
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\hypertarget{input-scaling}{%
+\subsection{Input Scaling}\label{input-scaling}}
+
+The \texttt{Ge} and \texttt{Gi} synaptic conductances computed from a
+given projection from one layer to the next reflect the number of
+receptors currently open and capable of passing current, which is a
+function of the activity of the sending layer, and total number of
+synapses. We use a set of equations to automatically normalize (rescale)
+these factors across different projections, so that each projection has
+roughly an equal influence on the receiving neuron, by default.
+
+The most important factor to be mindful of for this automatic rescaling
+process is the expected activity level in a given sending layer. This is
+set initially to \texttt{Layer.Inhib.ActAvg.Init}, and adapted from
+there by the various other parameters in that \texttt{Inhib.ActAvg}
+struct. It is a good idea in general to set that \texttt{Init} value to
+a reasonable estimate of the proportion of activity you expect in the
+layer, and in very small networks, it is typically much better to just
+set the \texttt{Fixed} flag and keep this \texttt{Init} value as such,
+as otherwise the automatically computed averages can fluctuate
+significantly and thus create corresponding changes in input scaling.
+The default \texttt{UseFirst} flag tries to avoid the dependence on the
+\texttt{Init} values but sometimes the first value may not be very
+representative, so it is better to set \texttt{Init} and turn off
+\texttt{UseFirst} for more reliable performance.
+
+Furthermore, we add two tunable parameters that further scale the
+overall conductance received from a given projection (one in a
+\emph{relative} way compared to other projections, and the other a
+simple \emph{absolute} multiplicative scaling factor). These are some of
+the most important parameters to configure in the model -\/- in
+particular the strength of top-down "back" projections typically must be
+relatively weak compared to bottom-up forward projections (e.g., a
+relative scaling factor of 0.1 or 0.2 relative to the forward
+projections).
+
+The scaling contributions of these two factors are:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{GScale\ =\ WtScale.Abs\ *\ (WtScale.Rel\ /\ Sum(all\ WtScale.Rel))}
+\end{itemize}
+
+Thus, all the \texttt{Rel} factors contribute in proportion to their
+relative value compared to the sum of all such factors across all
+receiving projections into a layer, while \texttt{Abs} just multiplies
+directly.
+
+In general, you want to adjust the \texttt{Rel} factors, to keep the
+total \texttt{Ge} and \texttt{Gi} levels relatively constant, while just
+shifting the relative contributions. In the relatively rare case where
+the overall \texttt{Ge} levels are too high or too low, you should
+adjust the \texttt{Abs} values to compensate.
+
+Typically the \texttt{Ge} value should be between .5 and 1, to maintain
+a reasonably responsive neural response, and avoid numerical integration
+instabilities and saturation that can arise if the values get too high.
+You can record the \texttt{Layer.Pools{[}0{]}.Inhib.Ge.Avg} and
+\texttt{.Max} values at the epoch level to see how these are looking
+-\/- this is especially important in large networks, and those with
+unusual, complex patterns of connectivity, where things might get out of
+whack.
+
+\hypertarget{automatic-rescaling}{%
+\subsubsection{Automatic Rescaling}\label{automatic-rescaling}}
+
+Here are the relevant factors that are used to compute the automatic
+rescaling to take into account the expected activity level on the
+sending layer, and the number of connections in the projection. The
+actual code is in \texttt{leabra/layer.go:\ GScaleFmAvgAct()} and
+\texttt{leabra/act.go\ SLayActScale}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{savg} = sending layer average activation
+\item
+  \texttt{snu} = sending layer number of units
+\item
+  \texttt{ncon} = number of connections
+\item
+  \texttt{slayActN\ =\ int(Round(savg\ *\ snu))} -\/- must be at least 1
+\item
+  \texttt{sc} = scaling factor, which is roughly 1 / expected number of
+  active sending connections.
+\item
+  \texttt{if\ ncon\ ==\ snu:} -\/- full connectivity
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{sc\ =\ 1\ /\ slayActN}
+  \end{itemize}
+\item
+  \texttt{else:} -\/- partial connectivity -\/- trickier
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{avgActN\ =\ int(Round(savg\ *\ ncon))} -\/- avg proportion
+    of connections
+  \item
+    \texttt{expActN\ =\ avgActN\ +\ 2} -\/- add an extra 2 variance
+    around expected value
+  \item
+    \texttt{maxActN\ =\ MIN(ncon,\ sLayActN)} -\/- can't be more than
+    number active
+  \item
+    \texttt{expActN\ =\ MIN(expActN,\ maxActN)} -\/- constrain
+  \item
+    \texttt{sc\ =\ 1\ /\ expActN}
+  \end{itemize}
+\end{itemize}
+
+This \texttt{sc} factor multiplies the \texttt{GScale} factor as
+computed above.
